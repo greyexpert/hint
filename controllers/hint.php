@@ -66,6 +66,12 @@ class HINT_CTRL_Hint extends OW_ActionController
             'rightCorner' => $rightCorner
         );
 
+        $beforeIncludesScript = $document->getScriptBeforeIncludes();
+        if ( !empty($beforeIncludesScript) )
+        {
+            $responce['beforeIncludes'] = $beforeIncludesScript;
+        }
+        
         foreach ( $document->getScripts() as $script )
         {
             $responce['scriptFiles'][] = $script;
@@ -82,7 +88,7 @@ class HINT_CTRL_Hint extends OW_ActionController
         {
             $responce['styleDeclarations'] = $styleDeclarations;
         }
-
+        
         $styleSheets = $document->getStyleSheets();
         if ( !empty($styleSheets) )
         {
