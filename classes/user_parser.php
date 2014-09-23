@@ -16,19 +16,19 @@
  */
 class HINT_CLASS_UserParser extends HINT_CLASS_Parser
 {
-    const USER_ROUTE_NAME = 'base_user_profile';
-
-    private $parseMask;
+    const ROUTE_NAME = 'base_user_profile';
 
     public function __construct()
     {
-        $routeMask = OW::getRouter()->urlForRoute(self::USER_ROUTE_NAME, array(
+        $routeMask = OW::getRouter()->urlForRoute(self::ROUTE_NAME, array(
             'username' => '--PLACEHOLDER--'
         ));
 
-        $this->parseMask = "^" . str_replace('--PLACEHOLDER--', '([\w]{1,32})$', $routeMask);
+        $parseMask = "^" . str_replace('--PLACEHOLDER--', '([\w]{1,32})$', $routeMask);
         
-        parent::__construct($this->parseMask, array(
+        printVar($parseMask);
+        
+        parent::__construct($parseMask, array(
             ".index-BASE_CMP_MyAvatarWidget a",
             ".ow_menu_wrap a",
             ".ow_console_dropdown_hover a",
@@ -39,7 +39,7 @@ class HINT_CLASS_UserParser extends HINT_CLASS_Parser
     public function parse($url)
     {
         $match = array();
-        preg_match('~' . $this->parseMask . '~', $url, $match);
+        preg_match('~' . $this->mask . '~', $url, $match);
 
         $userName = $match[1];
         $user = BOL_UserService::getInstance()->findByUsername($userName);
