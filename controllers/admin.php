@@ -120,8 +120,10 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
             throw new Redirect403Exception;
         }
         
+        $entityType = trim($_GET["entityType"]);
+        
         $sort = json_decode($_GET["sort"]);
-        HINT_BOL_Service::getInstance()->setButtonsOrder(HINT_BOL_Service::ENTITY_TYPE_USER, $sort);
+        HINT_BOL_Service::getInstance()->setButtonsOrder($entityType, $sort);
     }
 }
 

@@ -14,7 +14,7 @@
  * @author Sergey Kambalin <greyexpert@gmail.com>
  * @package hint.components
  */
-class HINT_CMP_UserHintPreview extends HINT_CMP_HintPreviewBase
+class HINT_CMP_GroupHintPreview extends HINT_CMP_HintPreviewBase
 {
     public function getCoverPreview()
     {
@@ -29,25 +29,21 @@ class HINT_CMP_UserHintPreview extends HINT_CMP_HintPreviewBase
     
     protected function getUserInfo()
     {
-        $user = array();
+        $group = array();
 
-        $user['isOnline'] = true;
-
+        $group["title"] = "Snowboarding";
+        $group["url"] = "javascript://";
+        
         $staticUrl = OW::getPluginManager()->getPlugin("hint")->getStaticUrl() . "preview/";
-        $user['avatar'] =  $staticUrl . 'avatar.jpg';
+        $group['avatar'] =  $staticUrl . 'avatar.jpg';
 
-        $user['role'] = null;
-
-        $user['displayName'] = "Angela Smith";
-        $user['url'] = "javascript://";
-
-        return $user;
+        return $group;
     }
 
     public function onBeforeRender()
     {
         parent::onBeforeRender();
         
-        $this->assign('user', $this->getUserInfo());
+        $this->assign('group', $this->getUserInfo());
     }
 }
