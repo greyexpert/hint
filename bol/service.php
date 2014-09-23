@@ -32,6 +32,7 @@ class HINT_BOL_Service
     const INFO_LINE2 = "line2";
 
     const ENTITY_TYPE_USER = 'user';
+    const ENTITY_TYPE_GROUP = 'group';
 
     private static $classInstance;
 

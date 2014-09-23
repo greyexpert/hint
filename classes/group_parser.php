@@ -35,7 +35,7 @@ class HINT_CLASS_GroupParser extends HINT_CLASS_Parser
         preg_match('~' . $this->mask . '~', $url, $match);
 
         $groupId = $match[1];
-        $group = null; // TODO find group by id using GroupsBridge
+        $group = HINT_CLASS_GroupsBridge::getInstance()->getGroupById($groupId);
         
         if ( $group === null )
         {
@@ -43,13 +43,20 @@ class HINT_CLASS_GroupParser extends HINT_CLASS_Parser
         }
 
         return array(
-            'groupId' => $group->id
+            'groupId' => $groupId
         );
     }
 
     public function renderHint( array $params )
     {
-        // TODO Render hint
+        $hint = new HINT_CMP_GroupHint($params['groupId']);
+
+        return array(
+            'body' => $hint->render(),
+            'topCorner' => $hint->renderTopCover(),
+            'rightCorner' => $hint->renderRightCover(),
+            'bottomCorner' => $hint->renderBottomCover()
+        );
     }
 }
 

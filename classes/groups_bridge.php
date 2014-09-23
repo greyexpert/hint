@@ -42,6 +42,33 @@ class HINT_CLASS_GroupsBridge
     {
 
     }
+    
+    /**
+     * 
+     * @param int $groupId
+     * @return GROUPS_BOL_Group
+     */
+    public function getGroupById( $groupId )
+    {
+        $group = GROUPS_BOL_Service::getInstance()->findGroupById($groupId);
+        
+        if ( $group === null )
+        {
+            return null;
+        }
+        
+        $out = array();
+        
+        $out["id"] = $group->id;
+        $out["timeStamp"] = $group->timeStamp;
+        $out["userId"] = $group->userId;
+        $out["title"] = $group->title;
+        $out["url"] = GROUPS_BOL_Service::getInstance()->getGroupUrl($group);
+        $out["avatar"] = GROUPS_BOL_Service::getInstance()
+                ->getGroupImageUrl($group, GROUPS_BOL_Service::IMAGE_SIZE_SMALL);
+        
+        return $out;
+    }
 
     public function init()
     {

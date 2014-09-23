@@ -14,6 +14,8 @@ OW::getRouter()->addRoute(new OW_Route('hint-configuration', 'admin/plugins/hint
 HINT_CLASS_ParseManager::getInstance()->init();
 HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_UserParser());
 
+HINT_CLASS_GroupsBridge::getInstance()->init();
+
 HINT_CLASS_FriendsBridge::getInstance()->init();
 HINT_CLASS_NewsfeedBridge::getInstance()->init();
 HINT_CLASS_BaseBridge::getInstance()->init();
