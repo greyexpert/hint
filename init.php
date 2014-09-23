@@ -25,6 +25,7 @@ HINT_CLASS_UheaderBridge::getInstance()->init();
 HINT_CLASS_UserCreditsBridge::getInstance()->init();
 HINT_CLASS_PhotoBridge::getInstance()->init();
 HINT_CLASS_VideoBridge::getInstance()->init();
+HINT_CLASS_GheaderBridge::getInstance()->init();
 
 function hint_add_admin_notification( BASE_CLASS_EventCollector $e )
 {

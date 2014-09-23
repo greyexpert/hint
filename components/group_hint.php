@@ -23,9 +23,21 @@ class HINT_CMP_GroupHint extends HINT_CMP_HintBase
     
     public function getCover()
     {
-        // TODO return group cover
+        $bridge = HINT_CLASS_GheaderBridge::getInstance();
         
-        return null;
+        if ( !$bridge->isActive() || !$bridge->isEnabled() )
+        {
+            return null;
+        }
+        
+        $cover = $bridge->getCover($this->entityId);
+        
+        if ( $cover === null )
+        {
+            return null;
+        }
+        
+        return $this->prepareCover($cover["src"], $cover["data"]);
     }
     
     public function getGroupInfo( $groupId )
