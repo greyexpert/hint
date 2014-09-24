@@ -142,8 +142,12 @@ class HINT_CLASS_BaseBridge
     public function onCollectInfoConfigs( BASE_CLASS_EventCollector $event )
     {
         $language = OW::getLanguage();
-        
         $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
         
         $event->add(array(
             "key" => "base-gender-age",
@@ -172,8 +176,12 @@ class HINT_CLASS_BaseBridge
     public function onInfoPreview( OW_Event $event )
     {
         $language = OW::getLanguage();
-        
         $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
         
         switch ( $params["key"] )
         {
@@ -208,6 +216,12 @@ class HINT_CLASS_BaseBridge
     public function onInfoRender( OW_Event $event )
     {
         $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
+        
         $entityType = $params["entityType"];
         $entityId = $params["entityId"];
         

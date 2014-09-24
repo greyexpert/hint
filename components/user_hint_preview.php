@@ -22,8 +22,8 @@ class HINT_CMP_UserHintPreview extends HINT_CMP_HintPreviewBase
 
         return array(
             'url' => $staticUrl . "cover.jpg",
-            'height' => 112.03585147247,
-            'imageCss' => "width: 100%; height: auto; top: -40.78104993598px"
+            'height' => 122.03585147247,
+            'imageCss' => "width: 100%; height: auto; top: -30.78104993598px"
         );
     }
     

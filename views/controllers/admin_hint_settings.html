@@ -103,7 +103,7 @@ div.h-dnd-legend {
         params.info = infoConfiguration();
         
         params.features = {
-            "cover": $("#feature_uheader").get(0).checked
+            "cover": $("#feature_header").get(0).checked
         };
         
         $(".h-requirements").hide();
@@ -117,7 +117,7 @@ div.h-dnd-legend {
         });
         
         $("#h-preview-box .ow_box_cap_body h3").removeClass("ow_ic_lens").addClass("h_preloader");
-        OW.loadComponent("HINT_CMP_UserHintPreview", ["{$entityType}", params], function( html ) {
+        OW.loadComponent("{$previewCmp}", ["{$entityType}", params], function( html ) {
             $("#h-preview").html(html);
 
             $("#h-preview-box .ow_box_cap_body h3").removeClass("h_preloader").addClass("ow_ic_lens");
@@ -186,7 +186,7 @@ div.h-dnd-legend {
 
             <tr class="{cycle values="ow_alt1, ow_alt2"}">
                 <td class="ow_value">
-                    {input name="uheader_enabled"}                    
+                    {input name="header_enabled"}                    
                 </td>
                 <td class="ow_label">
                     {text key="hint+admin_profile_cover_option"}

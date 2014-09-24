@@ -18,29 +18,31 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
 {
     const PLUGIN_URL = "http://www.oxwall.org/store/item/634";
     
-    public function index()
+    protected function hintSettings( $entityType, $previewCmpClass, $headerBridge, $features = array(), $requirements = array() )
     {
+        $this->setPageHeading(OW::getLanguage()->text('hint', 'admin_heading'));
+        
         HINT_BOL_Service::getInstance()->saveConfig("admin_notified", 1);
         
-        $this->setPageHeading(OW::getLanguage()->text('hint', 'admin_heading'));
-        $this->setPageHeadingIconClass('ow_ic_user');
+        $tpl = OW::getPluginManager()->getPlugin("hint")
+                ->getCtrlViewDir() . "admin_hint_settings.html";
+        
+        $this->setTemplate($tpl);
         
         $sortableStatic = OW::getPluginManager()->getPlugin("base")->getStaticJsUrl() . "jquery-ui.min.js";
         OW::getDocument()->addScript($sortableStatic);
         
-        $buttonConfig = $this->getActionConfigs( HINT_BOL_Service::ENTITY_TYPE_USER );
+        $this->assign("previewCmp", $previewCmpClass);
+        
+        $buttonConfig = $this->getActionConfigs($entityType);
         $this->assign("buttonConfigs", $buttonConfig);
-
-        $features = array();
-        $features["cover"] = HINT_CLASS_UheaderBridge::getInstance()->isEnabled();
         
         $info = array();
-        $info[HINT_BOL_Service::INFO_LINE0] = HINT_BOL_Service::getInstance()->getInfoConfig(HINT_BOL_Service::ENTITY_TYPE_USER, HINT_BOL_Service::INFO_LINE0);
-        $info[HINT_BOL_Service::INFO_LINE1] = HINT_BOL_Service::getInstance()->getInfoConfig(HINT_BOL_Service::ENTITY_TYPE_USER, HINT_BOL_Service::INFO_LINE1);
-        $info[HINT_BOL_Service::INFO_LINE2] = HINT_BOL_Service::getInstance()->getInfoConfig(HINT_BOL_Service::ENTITY_TYPE_USER, HINT_BOL_Service::INFO_LINE2);
+        $info[HINT_BOL_Service::INFO_LINE0] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE0);
+        $info[HINT_BOL_Service::INFO_LINE1] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE1);
+        $info[HINT_BOL_Service::INFO_LINE2] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE2);
         
-        
-        $form = new HINT_ConfigurationForm(HINT_BOL_Service::ENTITY_TYPE_USER, $buttonConfig, $features, $info);
+        $form = new HINT_ConfigurationForm($entityType, $buttonConfig, $features, $info, $headerBridge);
         if ( OW::getRequest()->isPost() && $form->isValid($_POST) )
         {
             $form->process();
@@ -50,8 +52,6 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         }
 
         $this->addForm($form);
-
-        $requirements = array();
         
         $params = array();
         $params["actions"] = array();
@@ -72,7 +72,40 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
             }
         }
         
-        if ( !HINT_CLASS_UheaderBridge::getInstance()->isActive() )
+        $this->assign("requirements", $requirements);
+        
+        $params["features"] = $features;
+        $params["info"] = $info;
+
+        $cmp = new $previewCmpClass(HINT_BOL_Service::ENTITY_TYPE_USER, $params);
+        $this->addComponent("preview", $cmp);
+
+        $this->assign("entityType", HINT_BOL_Service::ENTITY_TYPE_USER);
+        $this->assign("info", $info);
+
+        $preloaderUrl = OW::getThemeManager()->getCurrentTheme()->getStaticUrl() . 'images/ajax_preloader_button.gif';
+        $this->assign("preloaderUrl", $preloaderUrl);
+        
+        $this->assign("pluginUrl", self::PLUGIN_URL);
+    }
+
+
+    public function index()
+    {
+        $userUrl = OW::getRouter()->urlForRoute("hint-configuration-user");
+        $this->redirect($userUrl);
+    }
+    
+    public function user()
+    {
+        $headerBridge = HINT_CLASS_UheaderBridge::getInstance();
+        
+        $features = array();
+        $features["cover"] = $headerBridge->isEnabled();
+        
+        $requirements = array();
+                
+        if ( !$headerBridge->isActive() )
         {
             $pluginEmbed = '<a href="' . HINT_CLASS_UheaderBridge::PLUGIN_URL . '" target="_blank">' . HINT_CLASS_UheaderBridge::PLUGIN_TITLE . '</a>';
             
@@ -91,23 +124,40 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
             )));
         }
         
-        $this->assign("requirements", $requirements);
-        
-        $params["features"] = $features;
-        $params["info"] = $info;
-
-        $cmp = new HINT_CMP_UserHintPreview(HINT_BOL_Service::ENTITY_TYPE_USER, $params);
-        $this->addComponent("preview", $cmp);
-
-        $this->assign("entityType", HINT_BOL_Service::ENTITY_TYPE_USER);
-        $this->assign("info", $info);
-
-        $preloaderUrl = OW::getThemeManager()->getCurrentTheme()->getStaticUrl() . 'images/ajax_preloader_button.gif';
-        $this->assign("preloaderUrl", $preloaderUrl);
-        
-        $this->assign("pluginUrl", self::PLUGIN_URL);
+        $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_USER, 'HINT_CMP_UserHintPreview', $headerBridge, $features, $requirements);
     }
 
+     public function group()
+    {
+        $headerBridge = HINT_CLASS_GheaderBridge::getInstance();
+         
+        $features = array();
+        $features["cover"] = $headerBridge->isEnabled();
+        
+        $requirements = array();
+                
+        if ( !$headerBridge->isActive() )
+        {
+            $pluginEmbed = '<a href="' . HINT_CLASS_GheaderBridge::PLUGIN_URL . '" target="_blank">' . HINT_CLASS_GheaderBridge::PLUGIN_TITLE . '</a>';
+            
+            $requirements[] = array(
+                "text" => OW::getLanguage()->text("hint", "gheader_required_long", array(
+                    "plugin" => $pluginEmbed,
+                    "feature" => OW::getLanguage()->text("hint", "admin_group_cover_option")
+                )),
+                
+                "hidden" => !$features["cover"],
+                "key" => "cover"
+            );
+            
+            $this->assign("coverRequired", OW::getLanguage()->text("hint", "gheader_required_short", array(
+                "plugin" => $pluginEmbed
+            )));
+        }
+        
+        $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_GROUP, 'HINT_CMP_GroupHintPreview', $headerBridge, $features, $requirements);
+    }
+    
     private function getActionConfigs( $feedType )
     {
         return HINT_BOL_Service::getInstance()->getButtonsSettings($feedType);
@@ -129,14 +179,15 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
 
 class HINT_ConfigurationForm extends Form
 {
-    private $actions, $entityType;
+    private $actions, $entityType, $headerBridge;
 
-    public function __construct( $entityType, $actions, $features, $info )
+    public function __construct( $entityType, $actions, $features, $info, $headerBridge )
     {
         parent::__construct("HINT_ConfigurationForm");
 
         $language = OW::getLanguage();
 
+        $this->headerBridge = $headerBridge;
         $this->actions = $actions;
         $this->entityType = $entityType;
 
@@ -154,8 +205,8 @@ class HINT_ConfigurationForm extends Form
         }
         
         // Additional Features
-        $field = new CheckboxField("uheader_enabled");
-        $field->setId("feature_uheader");
+        $field = new CheckboxField("header_enabled");
+        $field->setId("feature_header");
         $field->setValue($features["cover"]);
         $field->addAttribute("class", "h-refresher");
         $field->addAttribute("data-key", "cover");
@@ -310,7 +361,7 @@ class HINT_ConfigurationForm extends Form
             $service->setActionActive($this->entityType, $action["key"], !empty($values["action-" . $action["key"]]));
         }
         
-        HINT_CLASS_UheaderBridge::getInstance()->setEnabled($values["uheader_enabled"]);
+        $this->headerBridge->setEnabled($values["header_enabled"]);
         
         $this->saveInfoLine(HINT_BOL_Service::INFO_LINE0, $values);
         $this->saveInfoLine(HINT_BOL_Service::INFO_LINE1, $values);

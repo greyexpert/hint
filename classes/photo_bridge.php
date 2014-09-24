@@ -46,6 +46,12 @@ class HINT_CLASS_PhotoBridge
     public function onCollectInfoConfigs( BASE_CLASS_EventCollector $event )
     {
         $language = OW::getLanguage();
+        $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
         
         $event->add(array(
             "key" => "photo-count",
@@ -57,6 +63,11 @@ class HINT_CLASS_PhotoBridge
     {
         $language = OW::getLanguage();
         $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
         
         if ( $params["key"] == "photo-count" )
         {

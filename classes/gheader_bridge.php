@@ -55,14 +55,14 @@ class HINT_CLASS_GheaderBridge
     {
         return true; // TODO remove
         
-        $enabled = HINT_BOL_Service::getInstance()->getConfig("ghint_enabled");
+        $enabled = HINT_BOL_Service::getInstance()->getConfig("gheader_enabled");
         
         return $enabled === null ? $this->isActive() : (bool) $enabled;
     }
     
     public function setEnabled( $yes = true )
     {
-        HINT_BOL_Service::getInstance()->saveConfig("ghint_enabled", $yes ? 1 : 0);
+        HINT_BOL_Service::getInstance()->saveConfig("gheader_enabled", $yes ? 1 : 0);
     }
     
     public function getCover( $groupId, $forWidth = null )

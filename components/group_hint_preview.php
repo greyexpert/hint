@@ -21,9 +21,9 @@ class HINT_CMP_GroupHintPreview extends HINT_CMP_HintPreviewBase
         $staticUrl = OW::getPluginManager()->getPlugin("hint")->getStaticUrl() . "preview/";
 
         return array(
-            'url' => $staticUrl . "cover.jpg",
-            'height' => 112.03585147247,
-            'imageCss' => "width: 100%; height: auto; top: -40.78104993598px"
+            'url' => $staticUrl . "group_cover.jpg",
+            'height' => 122,
+            'imageCss' => "width: 100%; height: auto; top: -7px"
         );
     }
     
@@ -35,7 +35,7 @@ class HINT_CMP_GroupHintPreview extends HINT_CMP_HintPreviewBase
         $group["url"] = "javascript://";
         
         $staticUrl = OW::getPluginManager()->getPlugin("hint")->getStaticUrl() . "preview/";
-        $group['avatar'] =  $staticUrl . 'avatar.jpg';
+        $group['avatar'] =  $staticUrl . 'group_avatar.png';
 
         return $group;
     }

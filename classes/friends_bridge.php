@@ -415,6 +415,11 @@ class HINT_CLASS_FriendsBridge
     {
         $params = $event->getParams();
         
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
+        
         if ( $params["line"] != HINT_BOL_Service::INFO_LINE0 )
         {
             $event->add(array(
@@ -427,6 +432,11 @@ class HINT_CLASS_FriendsBridge
     public function onInfoPreview( OW_Event $event )
     {
         $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
         
         if ( $params["key"] != "friends-list" )
         {
@@ -453,6 +463,12 @@ class HINT_CLASS_FriendsBridge
     public function onInfoRender( OW_Event $event )
     {
         $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        {
+            return;
+        }
+        
         $entityType = $params["entityType"];
         $entityId = $params["entityId"];
         
