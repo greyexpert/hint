@@ -174,6 +174,8 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         
         $sort = json_decode($_GET["sort"]);
         HINT_BOL_Service::getInstance()->setButtonsOrder($entityType, $sort);
+        
+        exit;
     }
 }
 
