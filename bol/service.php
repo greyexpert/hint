@@ -33,6 +33,7 @@ class HINT_BOL_Service
 
     const ENTITY_TYPE_USER = 'user';
     const ENTITY_TYPE_GROUP = 'group';
+    const ENTITY_TYPE_EVENT = 'event';
 
     private static $classInstance;
 

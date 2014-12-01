@@ -17,6 +17,7 @@ HINT_CLASS_ParseManager::getInstance()->init();
 HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_UserParser());
 
 HINT_CLASS_GroupsBridge::getInstance()->init();
+HINT_CLASS_EventsBridge::getInstance()->init();
 
 HINT_CLASS_FriendsBridge::getInstance()->init();
 HINT_CLASS_NewsfeedBridge::getInstance()->init();
