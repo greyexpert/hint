@@ -226,7 +226,8 @@ class HINT_CLASS_EventsBridge
                 break;
             
             case "event-desc":
-                $event->setData('<span class="ow_remark">' . $language->text("hint", "info_event_desc_preview") . '</span>');
+                $description = UTIL_String::truncate($language->text("hint", "info_event_desc_preview"), 110, "...");
+                $event->setData('<span class="ow_remark ow_small">' . $description . '</span>');
                 break;
         }
     }

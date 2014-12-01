@@ -323,8 +323,7 @@ html .uhint-foot ul.ow_bl li {
 }
 
 .hb-info-content {
-    margin-left: 120px;
-    padding: 5px;
+    margin: 5px 5px 5px 125px;
     overflow: hidden;
     height: 60px;
 }
