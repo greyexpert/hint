@@ -207,7 +207,7 @@ div.h-dnd-legend {
                 </th>
             </tr>
 
-            <tr class="{cycle values="ow_alt1, ow_alt2"}">
+            <tr class="{cycle values="ow_alt1, ow_alt2"}" {if empty($info.line0)}style="display: none;"{/if}>
                 <td class="ow_label">
                     {text key="hint+admin_info0_label"}
                 </td>
@@ -216,7 +216,7 @@ div.h-dnd-legend {
                 </td>
             </tr>
             
-            <tr class="{cycle values="ow_alt1, ow_alt2"}">
+            <tr class="{cycle values="ow_alt1, ow_alt2"}" {if empty($info.line1)}style="display: none;"{/if}>
                 <td class="ow_label">
                     {text key="hint+admin_info1_label"}
                 </td>
@@ -225,7 +225,7 @@ div.h-dnd-legend {
                 </td>
             </tr>
             
-            <tr class="{cycle values="ow_alt1, ow_alt2"}">
+            <tr class="{cycle values="ow_alt1, ow_alt2"}" {if empty($info.line2)}style="display: none;"{/if}>
                 <td class="ow_label">
                     {text key="hint+admin_info2_label"}
                 </td>

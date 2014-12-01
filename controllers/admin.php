@@ -18,7 +18,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
 {
     const PLUGIN_URL = "http://www.oxwall.org/store/item/634";
     
-    protected function hintSettings( $entityType, $previewCmpClass, $headerBridge, $features = array(), $requirements = array() )
+    protected function hintSettings( $entityType, $previewCmpClass, $headerBridge, $features = array(), $requirements = array(), $lines = null )
     {
         $this->setPageHeading(OW::getLanguage()->text('hint', 'admin_heading'));
         
@@ -37,11 +37,27 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         $buttonConfig = $this->getActionConfigs($entityType);
         $this->assign("buttonConfigs", $buttonConfig);
         
-        $info = array();
-        $info[HINT_BOL_Service::INFO_LINE0] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE0);
-        $info[HINT_BOL_Service::INFO_LINE1] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE1);
-        $info[HINT_BOL_Service::INFO_LINE2] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE2);
+        $lines = $lines === null 
+                ? array( HINT_BOL_Service::INFO_LINE0, HINT_BOL_Service::INFO_LINE1, HINT_BOL_Service::INFO_LINE2 )
+                : $lines;
         
+        $info = array();
+
+        if ( in_array(HINT_BOL_Service::INFO_LINE0, $lines) )
+        {
+            $info[HINT_BOL_Service::INFO_LINE0] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE0);
+        }
+        
+        if ( in_array(HINT_BOL_Service::INFO_LINE1, $lines) )
+        {
+            $info[HINT_BOL_Service::INFO_LINE1] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE1);
+        }
+        
+        if ( in_array(HINT_BOL_Service::INFO_LINE2, $lines) )
+        {
+            $info[HINT_BOL_Service::INFO_LINE2] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE2);
+        }
+                
         $form = new HINT_ConfigurationForm($entityType, $buttonConfig, $features, $info, $headerBridge);
         if ( OW::getRequest()->isPost() && $form->isValid($_POST) )
         {
@@ -77,10 +93,10 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         $params["features"] = $features;
         $params["info"] = $info;
 
-        $cmp = new $previewCmpClass(HINT_BOL_Service::ENTITY_TYPE_USER, $params);
+        $cmp = new $previewCmpClass($entityType, $params);
         $this->addComponent("preview", $cmp);
 
-        $this->assign("entityType", HINT_BOL_Service::ENTITY_TYPE_USER);
+        $this->assign("entityType", $entityType);
         $this->assign("info", $info);
 
         $preloaderUrl = OW::getThemeManager()->getCurrentTheme()->getStaticUrl() . 'images/ajax_preloader_button.gif';
@@ -155,7 +171,11 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
             )));
         }
         
-        $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_GROUP, 'HINT_CMP_GroupHintPreview', $headerBridge, $features, $requirements);
+        $lines = array(
+            HINT_BOL_Service::INFO_LINE1, HINT_BOL_Service::INFO_LINE2
+        );
+        
+        $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_GROUP, 'HINT_CMP_GroupHintPreview', $headerBridge, $features, $requirements, $lines);
     }
     
     public function event()
@@ -186,7 +206,11 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
             )));
         }
         
-        $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_EVENT, 'HINT_CMP_EventHintPreview', $headerBridge, $features, $requirements);
+        $lines = array(
+            HINT_BOL_Service::INFO_LINE1, HINT_BOL_Service::INFO_LINE2
+        );
+        
+        $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_EVENT, 'HINT_CMP_EventHintPreview', $headerBridge, $features, $requirements, $lines);
     }
     
     private function getActionConfigs( $feedType )
@@ -388,7 +412,7 @@ class HINT_ConfigurationForm extends Form
     {
         $service = HINT_BOL_Service::getInstance();
         $values = $this->getValues();
-
+        
         foreach ( $this->actions as $action )
         {
             $service->setActionActive($this->entityType, $action["key"], !empty($values["action-" . $action["key"]]));

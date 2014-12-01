@@ -77,6 +77,194 @@ class HINT_CLASS_EventsBridge
         
         return $out;
     }
+    
+    
+    public function onCollectButtons( BASE_CLASS_EventCollector $event )
+    {
+        $params = $event->getParams();
+
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            return;
+        }
+
+        $language = OW::getLanguage();
+        
+        $eventId = $params["entityId"];
+        $eventInfo = $this->getEventById($eventId);
+        
+        if ( empty($eventInfo) )
+        {
+            return;
+        }
+        
+        // View Event button
+        
+        $event->add(array(
+            "key" => "event-view",
+            "label" => $language->text("hint", "button_view_event_label"),
+            "attrs" => array(
+                "href" => $eventInfo["url"],
+                "target" => "_blank"
+            )
+        ));
+        
+        // Flag Event button
+        // TODO
+        $event->add(array(
+            "key" => "event-flag",
+            "label" => $language->text("hint", "button_flag_event_label"),
+            "attrs" => array(
+                "href" => "javascript://"
+            )
+        ));
+    }
+
+    public function onCollectButtonsPreview( BASE_CLASS_EventCollector $event )
+    {
+        $params = $event->getParams();
+
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            return;
+        }
+
+        $language = OW::getLanguage();
+
+        // Event View
+        
+        $event->add(array(
+            "key" => "event-view",
+            "label" => $language->text("hint", "button_view_event_label"),
+            "attrs" => array("href" => "javascript://")
+        ));
+        
+        // Event Flag
+        
+        $event->add(array(
+            "key" => "event-flag",
+            "label" => $language->text("base", "flag"),
+            "attrs" => array("href" => "javascript://")
+        ));
+    }
+
+    public function onCollectButtonsConfig( BASE_CLASS_EventCollector $event )
+    {
+        $params = $event->getParams();
+
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            return;
+        }
+
+        $language = OW::getLanguage();
+        $service = HINT_BOL_Service::getInstance();
+        
+        // View Event
+        
+        $viewEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-view");
+        $event->add(array(
+            "key" => "event-view",
+            "active" => $viewEvent === null ? false : $viewEvent,
+            "label" => $language->text("hint", "button_view_event_config")
+        ));
+        
+        // Flag Event
+        
+        $flagEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-flag");
+        $event->add(array(
+            "key" => "event-flag",
+            "active" => $flagEvent === null ? false : $flagEvent,
+            "label" => $language->text("base", "flag")
+        ));
+    }
+    
+    public function onCollectInfoConfigs( BASE_CLASS_EventCollector $event )
+    {
+        $language = OW::getLanguage();
+        $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            return;
+        }
+        
+        $event->add(array(
+            "key" => "event-descr",
+            "label" => $language->text("hint", "info_event_desc_label")
+        ));
+        
+        $event->add(array(
+            "key" => "event-users",
+            "label" => $language->text("hint", "info_event_users_label")
+        ));
+                
+        $event->add(array(
+            "key" => "event-date",
+            "label" => $language->text("hint", "info_event_date_label")
+        ));
+    }
+    
+    public function onInfoPreview( OW_Event $event )
+    {
+        $language = OW::getLanguage();
+        $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            return;
+        }
+        
+        switch ( $params["key"] )
+        {
+            case "event-date":
+                $event->setData($language->text("hint", "info_event_date_preview"));
+                break;
+            
+            case "event-users":
+                $event->setData("Event Users // TODO");
+                break;
+            
+            case "base-desc":
+                $event->setData('<span class="ow_remark">' . $language->text("hint", "info_event_desc_preview") . '</span>');
+                break;
+        }
+    }
+    
+    public function onInfoRender( OW_Event $event )
+    {
+        $params = $event->getParams();
+        
+        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            return;
+        }
+        
+        $eventId = $params["entityId"];
+        $eventInfo = $this->getEventById($eventId);
+        
+        if ( empty($eventInfo) )
+        {
+            return;
+        }
+        
+        switch ( $params["key"] )
+        {
+            case "event-date":
+                // TODO
+                break;
+            
+            case "event-users":
+                // TODO
+                break;
+            
+            case "base-desc":
+                // TODO
+                break;
+        }
+    }
+    
+    
 
     public function init()
     {
@@ -86,5 +274,13 @@ class HINT_CLASS_EventsBridge
         }
         
         HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_EventParser());
+        
+        OW::getEventManager()->bind(HINT_BOL_Service::EVENT_COLLECT_BUTTONS, array($this, 'onCollectButtons'));
+        OW::getEventManager()->bind(HINT_BOL_Service::EVENT_COLLECT_BUTTONS_PREVIEW, array($this, 'onCollectButtonsPreview'));
+        OW::getEventManager()->bind(HINT_BOL_Service::EVENT_COLLECT_BUTTONS_CONFIG, array($this, 'onCollectButtonsConfig'));
+        
+        OW::getEventManager()->bind(HINT_BOL_Service::EVENT_COLLECT_INFO_CONFIG, array($this, 'onCollectInfoConfigs'));
+        OW::getEventManager()->bind(HINT_BOL_Service::EVENT_INFO_PREVIEW, array($this, 'onInfoPreview'));
+        OW::getEventManager()->bind(HINT_BOL_Service::EVENT_INFO_RENDER, array($this, 'onInfoRender'));
     }
 }
