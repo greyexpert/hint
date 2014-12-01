@@ -190,7 +190,7 @@ class HINT_CLASS_EventsBridge
         }
         
         $event->add(array(
-            "key" => "event-descr",
+            "key" => "event-desc",
             "label" => $language->text("hint", "info_event_desc_label")
         ));
         
@@ -225,7 +225,7 @@ class HINT_CLASS_EventsBridge
                 $event->setData("Event Users // TODO");
                 break;
             
-            case "base-desc":
+            case "event-desc":
                 $event->setData('<span class="ow_remark">' . $language->text("hint", "info_event_desc_preview") . '</span>');
                 break;
         }

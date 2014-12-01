@@ -57,7 +57,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         {
             $info[HINT_BOL_Service::INFO_LINE2] = HINT_BOL_Service::getInstance()->getInfoConfig($entityType, HINT_BOL_Service::INFO_LINE2);
         }
-                
+        
         $form = new HINT_ConfigurationForm($entityType, $buttonConfig, $features, $info, $headerBridge);
         if ( OW::getRequest()->isPost() && $form->isValid($_POST) )
         {
