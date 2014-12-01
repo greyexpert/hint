@@ -13,6 +13,65 @@
  * @package hint.static
  */
 
+/* Event Hint ------------------------------------------------------------------ */
+
+
+a.ehint-date {
+    display: block!important;
+    text-decoration: none!important;
+    color: inherit!important;
+}
+
+.ehint-date
+{
+    width: 50px;
+    height: 50px;
+    border-width: 1px;
+
+    border-radius: 4px;
+    float: left;
+    
+    text-align: center;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    
+    cursor: pointer;
+}
+
+.ehint-date-month {
+    margin-top: 1px;
+    line-height: 23px;
+    
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.ehint-date-date {
+    font-size: 25px;
+}
+
+
+/* Mock */
+
+.ehint-wrap .uhb-head-text {
+    margin-left: 70px;
+}
+
+.ehint-date {
+    position: relative;
+    margin-top: -40px;
+    margin-left: 10px;
+}
+
+
+/* Group Hint ------------------------------------------------------------------ */
+
+
+
+
+
+/* User Hint ------------------------------------------------------------------ */
+
 #hint-prototype {
     display: none;
 }

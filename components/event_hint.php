@@ -42,7 +42,16 @@ class HINT_CMP_EventHint extends HINT_CMP_HintBase
     
     public function getEventInfo( $eventId )
     {
-        return HINT_CLASS_EventsBridge::getInstance()->getEventById($eventId);
+        $eventInfo = HINT_CLASS_EventsBridge::getInstance()->getEventById($eventId);
+        
+        $data = getdate($this->event["startTimeStamp"]);
+        
+        $eventInfo["date"] = array(
+            "month" => OW::getLanguage()->text("base", "date_time_month_short_" . $data["mon"]),
+            "day" => $data["mday"]
+        );
+        
+        return $eventInfo;
     }
 
     public function onBeforeRender()

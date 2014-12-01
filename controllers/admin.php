@@ -127,7 +127,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_USER, 'HINT_CMP_UserHintPreview', $headerBridge, $features, $requirements);
     }
 
-     public function group()
+    public function group()
     {
         $headerBridge = HINT_CLASS_GheaderBridge::getInstance();
          
@@ -156,6 +156,37 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         }
         
         $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_GROUP, 'HINT_CMP_GroupHintPreview', $headerBridge, $features, $requirements);
+    }
+    
+    public function event()
+    {
+        $headerBridge = HINT_CLASS_EheaderBridge::getInstance();
+         
+        $features = array();
+        $features["cover"] = $headerBridge->isEnabled();
+        
+        $requirements = array();
+                
+        if ( !$headerBridge->isActive() )
+        {
+            $pluginEmbed = '<a href="' . HINT_CLASS_GheaderBridge::PLUGIN_URL . '" target="_blank">' . HINT_CLASS_GheaderBridge::PLUGIN_TITLE . '</a>';
+            
+            $requirements[] = array(
+                "text" => OW::getLanguage()->text("hint", "eheader_required_long", array(
+                    "plugin" => $pluginEmbed,
+                    "feature" => OW::getLanguage()->text("hint", "admin_event_cover_option")
+                )),
+                
+                "hidden" => !$features["cover"],
+                "key" => "cover"
+            );
+            
+            $this->assign("coverRequired", OW::getLanguage()->text("hint", "eheader_required_short", array(
+                "plugin" => $pluginEmbed
+            )));
+        }
+        
+        $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_EVENT, 'HINT_CMP_EventHintPreview', $headerBridge, $features, $requirements);
     }
     
     private function getActionConfigs( $feedType )

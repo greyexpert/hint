@@ -12,6 +12,7 @@
 OW::getRouter()->addRoute(new OW_Route('hint-configuration', 'admin/plugins/hint', 'HINT_CTRL_Admin', 'index'));
 OW::getRouter()->addRoute(new OW_Route('hint-configuration-user', 'admin/plugins/hint/user', 'HINT_CTRL_Admin', 'user'));
 OW::getRouter()->addRoute(new OW_Route('hint-configuration-group', 'admin/plugins/hint/group', 'HINT_CTRL_Admin', 'group'));
+OW::getRouter()->addRoute(new OW_Route('hint-configuration-event', 'admin/plugins/hint/event', 'HINT_CTRL_Admin', 'event'));
 
 HINT_CLASS_ParseManager::getInstance()->init();
 HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_UserParser());

@@ -14,36 +14,41 @@
  * @author Sergey Kambalin <greyexpert@gmail.com>
  * @package hint.components
  */
-class HINT_CMP_GroupHintPreview extends HINT_CMP_HintPreviewBase
+class HINT_CMP_EventHintPreview extends HINT_CMP_HintPreviewBase
 {
     public function getCoverPreview()
     {
         $staticUrl = OW::getPluginManager()->getPlugin("hint")->getStaticUrl() . "preview/";
 
         return array(
-            'url' => $staticUrl . "group_cover.jpg",
+            'url' => $staticUrl . "event_cover.jpg",
             'height' => 122,
             'imageCss' => "width: 100%; height: auto; top: -7px"
         );
     }
     
-    protected function getGroupInfo()
+    protected function getEventInfo()
     {
-        $group = array();
+        $eventInfo = array();
 
-        $group["title"] = "Snowboarding";
-        $group["url"] = "javascript://";
+        $eventInfo["title"] = "New Year";
+        $eventInfo["url"] = "javascript://";
         
         $staticUrl = OW::getPluginManager()->getPlugin("hint")->getStaticUrl() . "preview/";
-        $group['avatar'] =  $staticUrl . 'group_avatar.png';
+        $eventInfo['avatar'] =  $staticUrl . 'event_avatar.png';
+        
+        $eventInfo["date"] = array(
+            "month" => OW::getLanguage()->text("base", "date_time_month_short_1"),
+            "day" => 1
+        );
 
-        return $group;
+        return $eventInfo;
     }
 
     public function onBeforeRender()
     {
         parent::onBeforeRender();
         
-        $this->assign('group', $this->getGroupInfo());
+        $this->assign('group', $this->getEventInfo());
     }
 }
