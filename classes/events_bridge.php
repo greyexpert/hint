@@ -222,7 +222,21 @@ class HINT_CLASS_EventsBridge
                 break;
             
             case "event-users":
-                $event->setData("Event Users // TODO");
+                $staticUrl = OW::getPluginManager()->getPlugin("hint")->getStaticUrl() . "preview/";
+        
+                $data = array();
+
+                for ( $i = 0; $i < 6; $i++ )
+                {
+                    $data[] = array(
+                        "src" => $staticUrl . "user_" . $i . ".jpg",
+                        "url" => "javascript://"
+                    );
+                }
+
+                $users = new HINT_CMP_UserList($data);
+
+                $event->setData($users->render());
                 break;
             
             case "event-desc":

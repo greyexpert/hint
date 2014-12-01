@@ -323,9 +323,9 @@ html .uhint-foot ul.ow_bl li {
 }
 
 .hb-info-content {
-    margin: 5px 5px 5px 125px;
+    margin: 5px 5px 0px 125px;
     overflow: hidden;
-    height: 60px;
+    height: 65px;
 }
 
 
@@ -429,7 +429,11 @@ html .uhint-bottom-corner.ow_bg_color {
     z-index: 103;
 }
 
-.hint-user-list {
+.hb-info-line1 .hint-user-list {
+    margin-bottom: 4px;
+}
+
+.hb-info-line2 .hint-user-list {
     margin-top: 4px;
 }
 
