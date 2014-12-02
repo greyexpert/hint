@@ -95,12 +95,25 @@ div.h-dnd-legend {
     
         return out;
     };
+    
+    function customSettings() {
+        var element = owForms["HINT_ConfigurationForm"].getElement("ehintType");
+        var out = {};
+        
+        if ( element ) {
+            out.ehintType = element.getValue();
+        }
+        
+        return out;
+    }
 
     var refresh = function() {
         var params = {};
 
         params.actions = actionConfiguration();
         params.info = infoConfiguration();
+        
+        params.settings = customSettings();
         
         params.features = {
             "cover": $("#feature_header").get(0).checked
@@ -156,6 +169,29 @@ div.h-dnd-legend {
 <div class="clearfix ow_stdmargin">
     {form name="HINT_ConfigurationForm"}
     <div class="ow_left h-left-col">
+        
+        {if $entityType == "event"}
+        
+        <table class="ow_table_1 ow_form h-setting-form">
+            <tr class="ow_tr_first">
+                <th class="ow_name ow_txtleft" colspan="2">
+                    <span class="ow_section_icon ow_ic_add">Settings</span>
+                </th>
+            </tr>
+
+            <tr class="{cycle values="ow_alt1, ow_alt2"}">
+                <td class="ow_value">
+                    {label name="ehintType"}
+                </td>
+                <td class="ow_label">
+                    {input name="ehintType"}
+                </td>
+            </tr>
+
+        </table>
+        
+        {/if}
+        
         <table class="ow_table_1 ow_form h-setting-form">
             <tr class="ow_tr_first">
                 <th class="ow_name ow_txtleft" colspan="2">

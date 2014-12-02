@@ -49,6 +49,31 @@ class HINT_CMP_EventHintPreview extends HINT_CMP_HintPreviewBase
     {
         parent::onBeforeRender();
         
-        $this->assign('group', $this->getEventInfo());
+        $type = null;
+        
+        if ( empty($this->params["settings"]) )
+        {
+            $type = HINT_BOL_Service::getInstance()->getConfig("ehintType");
+        }
+        else
+        {
+            $type = $this->params["settings"]["ehintType"];
+        }
+        
+        $hasLines = false;
+        
+        foreach ( $this->params["info"] as $line )
+        {
+            if ( !empty($line["key"]) )
+            {
+                $hasLines = true;
+            }
+        }
+        
+        $this->assign("hasLines", $hasLines);
+        
+        $type = empty($type) ? "date" : $type;
+        $this->assign("type", $type);     
+        $this->assign('event', $this->getEventInfo());
     }
 }

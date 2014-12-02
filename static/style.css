@@ -53,14 +53,65 @@ a.ehint-date {
 
 /* Mock */
 
-.ehint-wrap .uhb-head-text {
+.ehint-type-date.ehint-on-lines .hb-info-content {
+    display: none;
+}
+
+.ehint-type-date.ehint-on-lines .ehint-date {
+    margin-top: -60px;
+}
+
+.ehint-type-date.ehint-on-lines .uhint-wrap {
+    min-height: 0;
+}
+
+.ehint-type-date .ehint-date {
+    margin-top: -66px;
+}
+
+.ehint-type-date.ehint-on-lines .uhb-head {
+    border-bottom-width: 0px;
+}
+
+.ehint-type-date .uhint-no-cover .uhb-head {
+    height: 70px;
+}
+
+.ehint-type-date.ehint-on-lines .uhint-bottom-corner,
+.ehint-type-date.ehint-on-lines .uhint-top-corner,
+.ehint-type-date.ehint-on-lines .uhint-right-corner,
+.ehint-type-date.ehint-on-lines .uhb-head {
+    background: none;
+}
+
+.ehint-type-date .uhb-head-text-wrap {
+    padding-bottom: 22px;
+}
+
+.ehint-type-date .uhb-head-text {
     margin-left: 70px;
 }
 
-.ehint-date {
-    position: relative;
-    margin-top: -40px;
+.ehint-type-date .hb-info-content {
+    height: auto;
+    max-height: 65px;
+    margin-bottom: 4px;
+}
+
+.ehint-type-date .hb-info-content {
     margin-left: 10px;
+    /*padding-top: 6px;*/
+}
+
+.ehint-date {
+    position: absolute;
+    margin-top: -50px;
+    margin-left: 10px;
+}
+
+.ehint-type-date .uhb-info {
+    height: auto;
+    max-height: 72px;
 }
 
 

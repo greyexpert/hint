@@ -431,6 +431,26 @@ class HINT_ConfigurationForm extends Form
         $this->addElement($field);
         
         
+        // Event custom settings
+        
+        if ( $entityType == HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            $eventHintType = new RadioField("ehintType");
+            
+            $eventHintType->addOptions(array(
+                "date" => $language->text("hint", "event_hint_type_date"),
+                "image" => $language->text("hint", "event_hint_type_image")
+            ));
+            
+            $ehintType = HINT_BOL_Service::getInstance()->getConfig("ehintType");
+            $ehintType = empty($ehintType) ? "date" : $ehintType;
+            $eventHintType->setValue($ehintType);
+            $eventHintType->setLabel($language->text("hint", "event_hint_type_label"));
+            $eventHintType->addAttribute("class", "h-refresher");
+
+            $this->addElement($eventHintType);
+        }
+        
         // submit
         $submit = new Submit('save');
         $submit->setValue($language->text('hint', 'admin_save_btn'));
@@ -462,12 +482,7 @@ class HINT_ConfigurationForm extends Form
     
     private function saveInfoLine( $line, $values )
     {
-        if ( empty($values["info_" . $line]) )
-        {
-            return;
-        }
-        
-        $key = $values["info_" . $line];
+        $key = empty($values["info_" . $line]) ? null : $values["info_" . $line];
         $question = $key == "base-question" ? $values["info_" . $line . "_question"] : null;
         
         HINT_BOL_Service::getInstance()->saveInfoConfig($this->entityType, $line, $key, $question);
@@ -488,5 +503,10 @@ class HINT_ConfigurationForm extends Form
         $this->saveInfoLine(HINT_BOL_Service::INFO_LINE0, $values);
         $this->saveInfoLine(HINT_BOL_Service::INFO_LINE1, $values);
         $this->saveInfoLine(HINT_BOL_Service::INFO_LINE2, $values);
+        
+        if ( $this->entityType == HINT_BOL_Service::ENTITY_TYPE_EVENT )
+        {
+            HINT_BOL_Service::getInstance()->saveConfig("ehintType", $values["ehintType"]);
+        }
     }
 }
