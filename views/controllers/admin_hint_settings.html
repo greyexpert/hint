@@ -145,6 +145,8 @@ div.h-dnd-legend {
 
 {/script}
 
+{if !empty($menu)}{$menu}{/if}
+
 {foreach from=$requirements item="r"}
     <div class="h-requirements ow_anno ow_smallmargin" id="r-{$r.key}" {if $r.hidden}style="display: none;"{/if}>
             {$r.text}

@@ -18,6 +18,65 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
 {
     const PLUGIN_URL = "http://www.oxwall.org/store/item/634";
     
+    /**
+     *
+     * @var BASE_CMP_ContentMenu
+     */
+    private $menu;
+    
+    
+    /**
+     * 
+     * @return BASE_CMP_ContentMenu
+     */
+    private function getMenu()
+    {
+        if ( $this->menu )
+        {
+            return $this->menu;
+        }
+        
+        $language = OW::getLanguage();
+        $router = OW::getRouter();
+        
+        $this->menu = new BASE_CMP_ContentMenu();
+        
+        // user
+        
+        $menuItem = new BASE_MenuItem();
+        $menuItem->setLabel($language->text("hint", "admin_tab_users"));
+        $menuItem->setIconClass("ow_ic_user");
+        $menuItem->setOrder(1);
+        $menuItem->setUrl($router->urlForRoute("hint-configuration-user"));
+        $menuItem->setKey("users");
+        
+        $this->menu->addElement($menuItem);
+
+        // group
+        
+        $menuItem = new BASE_MenuItem();
+        $menuItem->setLabel($language->text("hint", "admin_tab_groups"));
+        $menuItem->setIconClass("ow_ic_files");
+        $menuItem->setOrder(2);
+        $menuItem->setUrl($router->urlForRoute("hint-configuration-group"));
+        $menuItem->setKey("groups");
+        
+        $this->menu->addElement($menuItem);
+        
+         // event
+        
+        $menuItem = new BASE_MenuItem();
+        $menuItem->setLabel($language->text("hint", "admin_tab_events"));
+        $menuItem->setIconClass("ow_ic_calendar");
+        $menuItem->setOrder(3);
+        $menuItem->setUrl($router->urlForRoute("hint-configuration-event"));
+        $menuItem->setKey("events");
+        
+        $this->menu->addElement($menuItem);
+        
+        return $this->menu;
+    }
+    
     protected function hintSettings( $entityType, $previewCmpClass, $headerBridge, $features = array(), $requirements = array(), $lines = null )
     {
         $this->setPageHeading(OW::getLanguage()->text('hint', 'admin_heading'));
@@ -103,6 +162,12 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         $this->assign("preloaderUrl", $preloaderUrl);
         
         $this->assign("pluginUrl", self::PLUGIN_URL);
+        
+        $menu = $this->getMenu();
+        if ( $menu !== null )
+        {
+            $this->addComponent("menu", $menu);
+        }
     }
 
 
