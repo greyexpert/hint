@@ -203,6 +203,11 @@ class HINT_CLASS_EventsBridge
             "key" => "event-date",
             "label" => $language->text("hint", "info_event_date_label")
         ));
+        
+        $event->add(array(
+            "key" => "event-location",
+            "label" => $language->text("hint", "info_event_location_label")
+        ));
     }
     
     public function onInfoPreview( OW_Event $event )
@@ -226,7 +231,7 @@ class HINT_CLASS_EventsBridge
         
                 $data = array();
 
-                for ( $i = 0; $i < 6; $i++ )
+                for ( $i = 0; $i < 9; $i++ )
                 {
                     $data[] = array(
                         "src" => $staticUrl . "user_" . $i . ".jpg",
@@ -234,7 +239,7 @@ class HINT_CLASS_EventsBridge
                     );
                 }
 
-                $users = new HINT_CMP_UserList($data);
+                $users = new HINT_CMP_UserList($data, array(), null, 9);
 
                 $event->setData($users->render());
                 break;
@@ -242,6 +247,10 @@ class HINT_CLASS_EventsBridge
             case "event-desc":
                 $description = UTIL_String::truncate($language->text("hint", "info_event_desc_preview"), 150, "...");
                 $event->setData('<span class="ow_remark ow_small">' . $description . '</span>');
+                break;
+            
+            case "event-location":
+                $event->setData($language->text("hint", "info_event_location_preview"));
                 break;
         }
     }

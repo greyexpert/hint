@@ -16,19 +16,17 @@
  */
 class HINT_CMP_UserList extends OW_Component
 {
-    const DISPLAY_COUNT = 6;
-    
-    public function __construct( $avatarData, $idList = array(), $viewAllTitle = null ) 
+    public function __construct( $avatarData, $idList = array(), $viewAllTitle = null, $displayCount = 6 ) 
     {
         parent::__construct();
         
         $uniqId = uniqid("hint-user-list-");
         $this->assign("uniqId", $uniqId);
         
-        $viewAll = count($idList) > self::DISPLAY_COUNT;
+        $viewAll = count($idList) > $displayCount;
         $this->assign("viewAll", $viewAll);
         
-        $tplData = array_slice($avatarData, 0, self::DISPLAY_COUNT - ( $viewAll ? 1 : 0 ) );
+        $tplData = array_slice($avatarData, 0, $displayCount - ( $viewAll ? 1 : 0 ) );
         
         $this->assign("avatars", $tplData);
         

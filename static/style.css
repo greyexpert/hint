@@ -53,6 +53,14 @@ a.ehint-date {
 
 /* Mock */
 
+.ehint-type-image .hint-user-list {
+    width: 215px;
+}
+
+.ehint-type-date .hint-user-list {
+    margin-left: 4px;
+}
+
 .ehint-type-date.ehint-on-lines .hb-info-content {
     display: none;
 }
@@ -482,6 +490,11 @@ html .uhint-bottom-corner.ow_bg_color {
 
 .hb-info-line1 .hint-user-list {
     margin-bottom: 4px;
+}
+
+.hint-user-list {
+    overflow: hidden;
+    height: 32px;
 }
 
 .hb-info-line2 .hint-user-list {
