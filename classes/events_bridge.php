@@ -190,24 +190,52 @@ class HINT_CLASS_EventsBridge
         }
         
         $event->add(array(
-            "key" => "event-desc",
-            "label" => $language->text("hint", "info_event_desc_label")
+            "key" => "event-date",
+            "label" => $language->text("hint", "info_event_date_label")
         ));
         
         $event->add(array(
-            "key" => "event-users",
-            "label" => $language->text("hint", "info_event_users_label")
+            "key" => "event-start-date",
+            "label" => $language->text("hint", "info_event_start_date_label")
         ));
-                
+        
         $event->add(array(
-            "key" => "event-date",
-            "label" => $language->text("hint", "info_event_date_label")
+            "key" => "event-end-date",
+            "label" => $language->text("hint", "info_event_end_date_label")
+        ));
+        
+        $event->add(array(
+            "key" => "event-created-by",
+            "label" => $language->text("hint", "info_event_created_by_label")
         ));
         
         $event->add(array(
             "key" => "event-location",
             "label" => $language->text("hint", "info_event_location_label")
         ));
+        
+        $event->add(array(
+            "key" => "event-access",
+            "label" => $language->text("hint", "info_event_access_label")
+        ));
+        
+        $event->add(array(
+            "key" => "event-access-creator",
+            "label" => $language->text("hint", "info_event_access_and_creator_label")
+        ));
+        
+        if ( $params["line"] != HINT_BOL_Service::INFO_LINE0 )
+        {
+            $event->add(array(
+                "key" => "event-desc",
+                "label" => $language->text("hint", "info_event_desc_label")
+            ));
+            
+            $event->add(array(
+                "key" => "event-users",
+                "label" => $language->text("hint", "info_event_users_label")
+            ));
+        }
     }
     
     public function onInfoPreview( OW_Event $event )
@@ -220,10 +248,53 @@ class HINT_CLASS_EventsBridge
             return;
         }
         
+        $startDate = UTIL_DateTime::formatSimpleDate(strtotime("1/1/15"));
+        $endDate = UTIL_DateTime::formatSimpleDate(strtotime("12/31/15"));
+        
+        $userEmbed = '<a href="javascript://">Angela Smith</a>';
+        
         switch ( $params["key"] )
         {
+            case "event-access-creator":
+                
+                $event->setData($language->text("hint", "event_info_access_and_creator", array(
+                    "user" => $userEmbed,
+                    "accessibility" => $language->text("hint", "event_info_access_by_invitation")
+                )));
+                break;
+            
+            case "event-access":
+                
+                $event->setData($language->text("hint", "event_info_access_by_invitation"));
+                break;
+            
+            case "event-created-by":
+                
+                $event->setData($language->text("hint", "event_info_created_by", array(
+                    "user" => $userEmbed
+                )));
+                break;
+            
             case "event-date":
-                $event->setData($language->text("hint", "info_event_date_preview"));
+                
+                $event->setData($language->text("hint", "event_info_date", array(
+                    "startDate" => $startDate,
+                    "endDate" => $endDate
+                )));
+                break;
+            
+            case "event-start-date":
+                
+                $event->setData($language->text("hint", "event_info_start_date", array(
+                    "startDate" => $startDate
+                )));
+                break;
+            
+            case "event-end-date":
+                
+                $event->setData($language->text("hint", "event_info_end_date", array(
+                    "endDate" => $endDate
+                )));
                 break;
             
             case "event-users":

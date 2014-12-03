@@ -183,6 +183,31 @@ class HINT_CMP_HintBase extends OW_Component
         );
     }
     
+    public function getOptions( $info, $buttons )
+    {
+        $options = array(
+            "hasLines" => false,
+            "has0line" => false
+        );
+        
+        foreach ( $this->params["info"] as $lineKey => $line )
+        {
+            if ( $lineKey == HINT_BOL_Service::INFO_LINE0 && !empty($line) )
+            {
+                $options["has0line"] = true;
+                
+                continue;
+            }
+            
+            if ( !empty($line) )
+            {
+                $options["hasLines"] = true;
+            }
+        }
+        
+        return $options;
+    }
+    
     public function onBeforeRender()
     {
         parent::onBeforeRender();
@@ -192,11 +217,16 @@ class HINT_CMP_HintBase extends OW_Component
             "entityId" => $this->entityId
         ));
         OW::getEventManager()->trigger($event);
-
+        
+        $info = $this->getInfo();
+        $buttons = $this->getButtonList();
+        
         $this->assign('cover', $this->cover);
-        $this->assign("buttons", $this->getButtonList());
-        $this->assign("info", $this->getInfo());
+        $this->assign("buttons", $buttons);
+        $this->assign("info", $info);
 
+        $this->assign("options", $this->getOptions($info, $buttons));
+        
         $this->assign('uniqId', $this->uniqId);
     }
 }

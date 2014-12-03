@@ -48,7 +48,7 @@ $( "#h-preview-buttons" ).sortable({
 $( "#h-preview-buttons" ).disableSelection();
 {/script}
 
-<div id="{$uniqId}" class="ehint-preview ehint-type-{$type} {if !$hasLines}ehint-on-lines{/if} hint-preview hint-container hint-bottom-right">
+<div id="{$uniqId}" class="ehint-preview ehint-type-{$options.type} {if !$options.hasLines}ehint-on-lines{/if} {if $options.has0line}ehint-0-line{/if} hint-preview hint-container hint-bottom-right">
     <div class="hint-content ow_border ow_bg_color">
         <div class="hint-corner-wrap hint-top-corner-wrap">
             <div class="hint-corner">
@@ -86,7 +86,7 @@ $( "#h-preview-buttons" ).disableSelection();
 
                         <div class="uhb-info clearfix">
                             
-                            {if $type == "image"}
+                            {if $options.type == "image"}
                                 <div class="uhint-avatar ow_avatar_console ow_bg_color ow_border">
                                     <div class="uhint-avatar-image">
                                     </div>

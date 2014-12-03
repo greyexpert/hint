@@ -254,7 +254,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
                 
         if ( !$headerBridge->isActive() )
         {
-            $pluginEmbed = '<a href="' . HINT_CLASS_GheaderBridge::PLUGIN_URL . '" target="_blank">' . HINT_CLASS_GheaderBridge::PLUGIN_TITLE . '</a>';
+            $pluginEmbed = '<a href="' . HINT_CLASS_EheaderBridge::PLUGIN_URL . '" target="_blank">' . HINT_CLASS_EheaderBridge::PLUGIN_TITLE . '</a>';
             
             $requirements[] = array(
                 "text" => OW::getLanguage()->text("hint", "eheader_required_long", array(
@@ -272,7 +272,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         }
         
         $lines = array(
-            HINT_BOL_Service::INFO_LINE1, HINT_BOL_Service::INFO_LINE2
+            HINT_BOL_Service::INFO_LINE1, HINT_BOL_Service::INFO_LINE2, HINT_BOL_Service::INFO_LINE0
         );
         
         $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_EVENT, 'HINT_CMP_EventHintPreview', $headerBridge, $features, $requirements, $lines);

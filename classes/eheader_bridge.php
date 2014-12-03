@@ -53,8 +53,6 @@ class HINT_CLASS_EheaderBridge
     
     public function isEnabled()
     {
-        return true; // TODO remove
-        
         $enabled = HINT_BOL_Service::getInstance()->getConfig("eheader_enabled");
         
         return $enabled === null ? $this->isActive() : (bool) $enabled;

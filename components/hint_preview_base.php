@@ -91,14 +91,19 @@ class HINT_CMP_HintPreviewBase extends HINT_CMP_HintBase
         
         return $out;
     }
-
+    
     public function onBeforeRender()
     {
+        $info = $this->getInfo();
+        $buttons = $this->getButtonList();
+        
         $this->assign('cover', $this->cover);
-        $this->assign("buttons", $this->getButtonList());
+        $this->assign("buttons", $buttons);
         $this->assign("renderedCover", $this->renderTopCover());
-        $this->assign("info", $this->getInfo());
+        $this->assign("info", $info);
         $this->assign('uniqId', $this->uniqId);
+        
+        $this->assign("options", $this->getOptions($info, $buttons));
         
         $rspUrl = OW::getRequest()
                 ->buildUrlQueryString(OW::getRouter()->urlFor("HINT_CTRL_Admin", "saveOrder"), array(

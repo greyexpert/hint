@@ -96,6 +96,10 @@ a.ehint-date {
     padding-bottom: 22px;
 }
 
+.ehint-type-date .uhb-head-text-wrap.uhbht-extra-line {
+    padding-bottom: 15px;
+}
+
 .ehint-type-date .uhb-head-text {
     margin-left: 70px;
 }
@@ -395,7 +399,8 @@ html .uhint-foot ul.ow_bl li {
 }
 
 .uhint-has-cover .uhbht-title,
-.uhint-has-cover .uhbht-info-line
+.uhint-has-cover .uhbht-info-line,
+.uhint-has-cover .uhbht-info-line a
 {
     color: #fff;
     font-weight: bold;
