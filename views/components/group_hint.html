@@ -64,7 +64,11 @@
     <div class="uhint-foot ow_border">
         <ul class="ow_bl clearfix">
             {foreach from=$buttons item="button"}
-                <li><a {$button.attrs}>{$button.label}</a></li>
+                {if !empty($button.html)}
+                    {$button.html}
+                {else}
+                    <li><a {$button.attrs}>{$button.label}</a></li>
+                {/if}
             {/foreach}
         </ul>
     </div>

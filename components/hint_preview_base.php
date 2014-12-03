@@ -46,7 +46,8 @@ class HINT_CMP_HintPreviewBase extends HINT_CMP_HintBase
             "label" => "---",
             "attrs" => array(
                 "href" => "javascript://"
-            )
+            ),
+            "html" => null
         );
 
         $btns = HINT_BOL_Service::getInstance()->getPreviewButtonList($this->entityType);

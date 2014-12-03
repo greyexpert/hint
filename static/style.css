@@ -13,6 +13,57 @@
  * @package hint.static
  */
 
+/* Context buttons ------------------------------------------------------------- */
+div.h-context-w {
+    margin-left: 0px;
+}
+
+a.ow_context_action_value.h-context-label,
+a.ow_context_action_value.h-context-label:hover,
+.h-toolbar-item {
+    display: inline-block;
+    height: inherit;
+    
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 10px;
+    background-image: none;
+}
+
+.h-context-has-icon a.ow_context_action_value.h-context-label {
+    padding-left: 16px;
+}
+
+a.ow_context_action_value.h-context-label.h-context-ic-check {
+    background-image: url(check.png);
+}
+
+a.ow_context_action_value.h-context-label {
+    padding: 0px 5px 0px 0px;
+    height: inherit;
+    line-height: 21px;
+    border: none;
+}
+
+.h-preview .h-context-btn-overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 3;
+    display: block;
+}
+
+.h-preview .h-context-w {
+    position: relative;
+}
+
+.h-context-btn-overlay {
+    display: none;
+}
+
 /* Event Hint ------------------------------------------------------------------ */
 
 

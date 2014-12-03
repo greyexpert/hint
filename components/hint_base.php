@@ -150,7 +150,8 @@ class HINT_CMP_HintBase extends OW_Component
             "label" => "---",
             "attrs" => array(
                 "href" => "javascript://"
-            )
+            ),
+            "html" => null
         );
 
         $btns = HINT_BOL_Service::getInstance()->getButtonList($this->entityType, $this->entityId);

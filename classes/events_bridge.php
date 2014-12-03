@@ -131,6 +131,23 @@ class HINT_CLASS_EventsBridge
 
         $language = OW::getLanguage();
 
+        // Event Invite
+        
+        $event->add(array(
+            "key" => "event-invite",
+            "label" => $language->text("hint", "button_invite_event_label"),
+            "attrs" => array("href" => "javascript://")
+        ));
+        
+        // Event Attend
+        
+        $contextBtn = new HINT_CMP_ContextButton($language->text("hint", "button_attend_event_label"));
+        
+        $event->add(array(
+            "key" => "event-attend",
+            "html" => '<li id="event-attend" class="h-preview">' . $contextBtn->render() . '</li>'
+        ));
+        
         // Event View
         
         $event->add(array(
@@ -160,6 +177,24 @@ class HINT_CLASS_EventsBridge
         $language = OW::getLanguage();
         $service = HINT_BOL_Service::getInstance();
         
+        // Attend Event
+        
+        $attendEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-attend");
+        $event->add(array(
+            "key" => "event-attend",
+            "active" => $attendEvent === null ? true : $attendEvent,
+            "label" => $language->text("hint", "button_attend_event_config")
+        ));
+        
+        // Invite Event
+        
+        $inviteEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-invite");
+        $event->add(array(
+            "key" => "event-invite",
+            "active" => $inviteEvent === null ? true : $inviteEvent,
+            "label" => $language->text("hint", "button_invite_event_config")
+        ));
+        
         // View Event
         
         $viewEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-view");
@@ -174,7 +209,7 @@ class HINT_CLASS_EventsBridge
         $flagEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-flag");
         $event->add(array(
             "key" => "event-flag",
-            "active" => $flagEvent === null ? false : $flagEvent,
+            "active" => $flagEvent === null ? true : $flagEvent,
             "label" => $language->text("base", "flag")
         ));
     }

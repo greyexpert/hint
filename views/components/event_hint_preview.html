@@ -110,7 +110,11 @@ $( "#h-preview-buttons" ).disableSelection();
                     <div class="uhint-foot ow_border">
                         <ul class="ow_bl clearfix" id="h-preview-buttons">
                             {foreach from=$buttons item="button"}
-                                <li id="{$button.key}"><a {$button.attrs}>{$button.label}</a></li>
+                                {if !empty($button.html)}
+                                    {$button.html}
+                                {else}
+                                    <li id="{$button.key}"><a {$button.attrs}>{$button.label}</a></li>
+                                {/if}
                             {/foreach}
                         </ul>
                     </div>
