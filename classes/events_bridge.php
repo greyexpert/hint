@@ -65,6 +65,7 @@ class HINT_CLASS_EventsBridge
         $out["timeStamp"] = $eventDto->createTimeStamp;
         
         $out["accessibility"] = $eventDto->whoCanView;
+        $out["whoCanInvite"] = $eventDto->whoCanInvite;
         
         $out["userId"] = $eventDto->userId;
         $out["location"] = $eventDto->location;
@@ -94,6 +95,18 @@ class HINT_CLASS_EventsBridge
         return $out;
     }
     
+    public function isEventUser( $userId, $eventId )
+    {
+        $user = EVENT_BOL_EventService::getInstance()->findEventUser($eventId, $userId);
+        
+        return !empty($user);
+    }
+    
+    public function hasContentProvider()
+    {
+        return class_exists("EVENT_CLASS_ContentProvider");
+    }
+        
     public function onCollectButtons( BASE_CLASS_EventCollector $event )
     {
         $params = $event->getParams();
@@ -113,6 +126,8 @@ class HINT_CLASS_EventsBridge
             return;
         }
         
+        $js = new UTIL_JsGenerator();
+        
         // View Event button
         
         $event->add(array(
@@ -125,14 +140,70 @@ class HINT_CLASS_EventsBridge
         ));
         
         // Flag Event button
+        
+        if ( $eventInfo["userId"] != OW::getUser()->getId() && $this->hasContentProvider() )
+        {
+            $flagId = uniqid("flag-");
+            $event->add(array(
+                "key" => "event-flag",
+                "label" => $language->text("base", "flag"),
+                "attrs" => array(
+                    "id" => $flagId,
+                    "href" => "javascript://"
+                )
+            ));
+            
+            $js->addScript('$("#' . $flagId . '").click(function() { OW.flagContent("event", {$eventId}) });', array(
+                "eventId" => $eventId
+            ));
+        }
+        
+        
+        // Invite Event button
+        
+        $inviteId = uniqid("invite-");
+        $event->add(array(
+            "key" => "event-invite",
+            "label" => $language->text("event", "invite_btn_label"),
+            "attrs" => array(
+                "id" => $inviteId,
+                "href" => "javascript://"
+            )
+        ));
+        
+        $options = array(
+            "inviteRsp" => OW::getRouter()->urlFor("EVENT_CTRL_Base", "inviteResponder"),
+            "eventId" => $eventId,
+            "title" => $language->text("hint", "invite_users_title"),
+            "eheader" => false
+        );
+        
+        if ( HINT_CLASS_EheaderBridge::getInstance()->isActive() )
+        {
+            HINT_CLASS_EheaderBridge::getInstance()->addStatic();
+            $options["eheader"] = true;
+        }
+        
+        $js->newObject("inviter", "HINT.Inviter", array($options));
+        $js->jQueryEvent("#" . $inviteId, "click", "inviter.show(); return false;");
+        
+        
+        
+        // Attend Event button
         // TODO
         $event->add(array(
-            "key" => "event-flag",
-            "label" => $language->text("hint", "button_flag_event_label"),
+            "key" => "event-attend",
+            "label" => $language->text("hint", "button_attend_event_label"),
             "attrs" => array(
                 "href" => "javascript://"
             )
         ));
+        
+        $jsStr = $js->generateJs();
+        if ( trim($jsStr) )
+        {
+            OW::getDocument()->addOnloadScript($js);
+        }
     }
 
     public function onCollectButtonsPreview( BASE_CLASS_EventCollector $event )
@@ -150,7 +221,7 @@ class HINT_CLASS_EventsBridge
         
         $event->add(array(
             "key" => "event-invite",
-            "label" => $language->text("hint", "button_invite_event_label"),
+            "label" => $language->text("event", "invite_btn_label"),
             "attrs" => array("href" => "javascript://")
         ));
         

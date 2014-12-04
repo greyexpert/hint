@@ -13,7 +13,7 @@
  * @package hint.static
  */
 HINT = (function() {
-
+    
     var _prototype, _delegate = {}, _CORNER_OFFSET = 7, _hintShown = null;
 
     _prototype = $('.hint-container', '#hint-prototype');
@@ -723,3 +723,51 @@ HINT.Launcher = (function() {
         }
     };
 })();
+
+HINT.Inviter = function( params ) {
+    
+    var DefaultInviter = function() {
+        var eventFloatBox;
+
+        OW.bind('base.avatar_user_list_select',
+            function( list ) {
+                eventFloatBox.close();
+                
+                $.ajax({
+                    type: 'POST',
+                    url: params.inviteRsp,
+                    data: {
+                        eventId: params.eventId,
+                        userIdList: JSON.stringify(list)
+                    },
+                    dataType: 'json',
+                    success : function(data) {
+                        if( data.messageType === 'error' ) {
+                            OW.error(data.message);
+                        }
+                        else {
+                            OW.info(data.message);
+                        }
+                    }
+                });
+            }
+        );
+        
+        this.show = function() {
+            eventFloatBox = OW.ajaxFloatBox('EVENT_CMP_InviteUserListSelect', [params.eventId], {
+                width:600,
+                iconClass: 'ow_ic_user',
+                title: params.title
+            });
+        };
+    };
+    
+    
+    var inviter = params.eheader ? new EHEADER.Inviter(params) : new DefaultInviter(params);
+    
+    return {
+        show: function() {
+            inviter.show();
+        }
+    };
+};

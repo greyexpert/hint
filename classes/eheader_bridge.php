@@ -51,6 +51,16 @@ class HINT_CLASS_EheaderBridge
         return OW::getPluginManager()->isPluginActive('eheader');
     }
     
+    public function addStatic()
+    {
+        if ( !$this->isActive() ) return;
+        
+        $staticUrl = OW::getPluginManager()->getPlugin("eheader")->getStaticUrl();
+        
+        OW::getDocument()->addScript($staticUrl . "eheader.min.js");
+        OW::getDocument()->addStyleSheet($staticUrl . "eheader.min.css");
+    }
+
     public function isEnabled()
     {
         $enabled = HINT_BOL_Service::getInstance()->getConfig("eheader_enabled");
