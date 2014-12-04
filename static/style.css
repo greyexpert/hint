@@ -64,6 +64,54 @@ a.ow_context_action_value.h-context-label {
     display: none;
 }
 
+ul.h-context-list a,
+.h-menu-w {
+    max-width: 200px;
+}
+
+ul.h-context-list a {
+    background-image: none;
+    border: none;
+    height: auto;
+    line-height: 14px;
+    
+    display: block;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.h-cl-label {
+    padding: 4px 0px 4px 12px;
+}
+
+body ul.h-context-list li {
+    float: none;
+    margin: 0px;
+}
+
+div.h-context-content ul.h-context-list li.h-list-label a {
+    padding-left: 10px;
+}
+
+ul.h-context-list li.h-li-selected a {
+    font-weight: bold;
+}
+
+span.h-li-check {
+    display: inline-block;
+    width: 11px;
+    height: 12px;
+}
+
+.h-li-selected span.h-li-check {
+    background-color: transparent;
+    background-image: url(check.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 10px;
+}
+
 /* Event Hint ------------------------------------------------------------------ */
 
 
@@ -218,7 +266,7 @@ a.hint-target-ib {
     border-radius: 3px;
 
     position: relative;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .hint-corner-wrap {
@@ -381,6 +429,7 @@ html .uhint-foot ul.ow_bl li {
 
 .uhb-head
 {
+    border-radius: 3px 3px 0px 0px;
     border-bottom-width: 1px;
     height: 60px;
     position: relative;

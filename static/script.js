@@ -771,3 +771,92 @@ HINT.Inviter = function( params ) {
         }
     };
 };
+
+
+HINT.AttendContext = function( uniqId, options, changed ) 
+{
+    var node = $("#" + uniqId);
+    var current = node.find("[data-type=current]");
+    var currentType = options.status || null;
+    var prevStatus = null;
+    var tooltip = node.find(".ow_tooltip");
+    
+    var actions = {
+        yes: node.find("[data-type=yes]"),
+        no: node.find("[data-type=no]"),
+        maybe: node.find("[data-type=maybe]")
+    };
+    
+    var typeIds = {
+        yes: 1,
+        no: 3,
+        maybe: 2
+    };
+    
+    function ajaxSuccess( r )
+    {
+        if(r.messageType === 'error') {
+            OW.error(r.message);
+            rollbackStatus();
+        } else {
+            OW.info(r.message);
+            
+            changed && changed(currentType, typeIds[currentType]);
+            
+            if ( r.eventId )
+            {
+                OW.loadComponent('EVENT_CMP_EventUsers', {eventId: r.eventId}, function( html ){
+                    $('.userList').html(html);
+                });
+            }
+        }
+    }
+    
+    function saveType( type )
+    {
+        $.ajax({
+           type: 'POST',
+           url: options.rsp,
+           data: {
+               "eventId": options.eventId,
+               "attend_status": typeIds[type]
+           },
+           success: ajaxSuccess,
+           error: rollbackStatus,
+           dataType: 'json'
+       });
+    }
+    
+    function rollbackStatus()
+    {
+        if ( !prevStatus ) return;
+        
+        currentType && actions[currentType].show();
+        
+        currentType = prevStatus;
+        actions[currentType].hide();
+        current.text(actions[currentType].text());
+        
+        tooltip.hide();
+    }
+    
+    function setCurrent( type, save ) {
+        if ( currentType ) {
+            actions[currentType].show();
+        }
+        
+        actions[type].hide();
+        current.text(actions[type].text());
+        prevStatus = currentType;
+        currentType = type;
+        
+        saveType(type);
+        
+        tooltip.hide();
+    }
+    
+    node.on("click", ".hc-action", function() {
+        var self = $(this), type = self.data("type");
+        setCurrent(type);
+    });
+};

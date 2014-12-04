@@ -102,6 +102,18 @@ class HINT_CLASS_EventsBridge
         return !empty($user);
     }
     
+    public function getUserStatus( $eventId, $userId )
+    {
+        $user = EVENT_BOL_EventService::getInstance()->findEventUser($eventId, $userId);
+        
+        if ( empty($user) )
+        {
+            return null;
+        }
+        
+        return $user->status;
+    }
+    
     public function hasContentProvider()
     {
         return class_exists("EVENT_CLASS_ContentProvider");
@@ -126,6 +138,7 @@ class HINT_CLASS_EventsBridge
             return;
         }
         
+        $isCreator = $eventInfo["userId"] == OW::getUser()->getId();
         $js = new UTIL_JsGenerator();
         
         // View Event button
@@ -141,7 +154,7 @@ class HINT_CLASS_EventsBridge
         
         // Flag Event button
         
-        if ( $eventInfo["userId"] != OW::getUser()->getId() && $this->hasContentProvider() )
+        if ( !$isCreator && $this->hasContentProvider() )
         {
             $flagId = uniqid("flag-");
             $event->add(array(
@@ -161,42 +174,51 @@ class HINT_CLASS_EventsBridge
         
         // Invite Event button
         
+        $canInvite = $eventInfo["whoCanInvite"] == 1 && $isCreator
+                || $eventInfo["whoCanInvite"] == 2;
+        
         $inviteId = uniqid("invite-");
-        $event->add(array(
-            "key" => "event-invite",
-            "label" => $language->text("event", "invite_btn_label"),
-            "attrs" => array(
-                "id" => $inviteId,
-                "href" => "javascript://"
-            )
-        ));
         
-        $options = array(
-            "inviteRsp" => OW::getRouter()->urlFor("EVENT_CTRL_Base", "inviteResponder"),
-            "eventId" => $eventId,
-            "title" => $language->text("hint", "invite_users_title"),
-            "eheader" => false
-        );
-        
-        if ( HINT_CLASS_EheaderBridge::getInstance()->isActive() )
+        if ( $canInvite )
         {
-            HINT_CLASS_EheaderBridge::getInstance()->addStatic();
-            $options["eheader"] = true;
+            $isEventUser = $this->isEventUser(OW::getUser()->getId(), $eventId);
+            
+            $event->add(array(
+                "key" => "event-invite",
+                "label" => $language->text("event", "invite_btn_label"),
+                "attrs" => array(
+                    "id" => $inviteId,
+                    "href" => "javascript://",
+                    "style" => !$isEventUser ? "display: none;" : ""
+                )
+            ));
+
+            $options = array(
+                "inviteRsp" => OW::getRouter()->urlFor("EVENT_CTRL_Base", "inviteResponder"),
+                "eventId" => $eventId,
+                "title" => $language->text("hint", "invite_users_title"),
+                "eheader" => false
+            );
+
+            if ( HINT_CLASS_EheaderBridge::getInstance()->isActive() )
+            {
+                HINT_CLASS_EheaderBridge::getInstance()->addStatic();
+                $options["eheader"] = true;
+            }
+
+            $js->newObject("inviter", "HINT.Inviter", array($options));
+            $js->jQueryEvent("#" . $inviteId, "click", "inviter.show(); return false;");
         }
-        
-        $js->newObject("inviter", "HINT.Inviter", array($options));
-        $js->jQueryEvent("#" . $inviteId, "click", "inviter.show(); return false;");
-        
-        
-        
+                
         // Attend Event button
-        // TODO
+        $attendId = uniqid("attend-");
+        
+        $attendContent = new HINT_CMP_EventAttendContext($eventId, OW::getUser()->getId(), $attendId, $inviteId);
+        $contextBtn = new HINT_CMP_ContextButton($attendContent->current["label"], $attendContent->render());
+        $contextBtn->setId($attendId);
         $event->add(array(
             "key" => "event-attend",
-            "label" => $language->text("hint", "button_attend_event_label"),
-            "attrs" => array(
-                "href" => "javascript://"
-            )
+            "html" => '<li id="event-attend">' . $contextBtn->render() . '</li>'
         ));
         
         $jsStr = $js->generateJs();
