@@ -132,7 +132,9 @@ a.ehint-date {
     border-bottom-width: 0px;
 }
 
-.ehint-type-date .uhint-no-cover .uhb-head {
+.ehint-type-date .uhint-no-cover .uhb-head,
+.ehint-type-date.uhint-no-cover .uhb-head
+{
     height: 70px;
 }
 

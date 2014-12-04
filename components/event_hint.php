@@ -40,11 +40,19 @@ class HINT_CMP_EventHint extends HINT_CMP_HintBase
         return $this->prepareCover($cover["src"], $cover["data"]);
     }
     
+    public function getOptions( $info, $buttons ) 
+    {
+        $options = parent::getOptions($info, $buttons);
+        $options["type"] = HINT_BOL_Service::getInstance()->getConfig("ehintType");
+        
+        return $options;
+    }
+    
     public function getEventInfo( $eventId )
     {
         $eventInfo = HINT_CLASS_EventsBridge::getInstance()->getEventById($eventId);
         
-        $data = getdate($this->event["startTimeStamp"]);
+        $data = getdate($eventInfo["startTimeStamp"]);
         
         $eventInfo["date"] = array(
             "month" => OW::getLanguage()->text("base", "date_time_month_short_" . $data["mon"]),

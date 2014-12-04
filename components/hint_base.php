@@ -191,7 +191,7 @@ class HINT_CMP_HintBase extends OW_Component
             "has0line" => false
         );
         
-        foreach ( $this->params["info"] as $lineKey => $line )
+        foreach ( $info as $lineKey => $line )
         {
             if ( $lineKey == HINT_BOL_Service::INFO_LINE0 && !empty($line) )
             {

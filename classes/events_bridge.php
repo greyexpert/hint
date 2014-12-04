@@ -64,7 +64,10 @@ class HINT_CLASS_EventsBridge
         $out["endTimeStamp"] = $eventDto->endTimeStamp;
         $out["timeStamp"] = $eventDto->createTimeStamp;
         
+        $out["accessibility"] = $eventDto->whoCanView;
+        
         $out["userId"] = $eventDto->userId;
+        $out["location"] = $eventDto->location;
         $out["title"] = $eventDto->title;
         $out["description"] = $eventDto->description;
         $out["url"] = OW::getRouter()->urlForRoute('event.view', array(
@@ -78,6 +81,18 @@ class HINT_CLASS_EventsBridge
         return $out;
     }
     
+    public function getUserIds( $eventId, $status, $count )
+    {
+        $users = EVENT_BOL_EventService::getInstance()->findEventUsers($eventId, $status, null, $count);
+        
+        $out = array();
+        foreach ( $users as $user )
+        {
+            $out[] = $user->userId;
+        }
+        
+        return $out;
+    }
     
     public function onCollectButtons( BASE_CLASS_EventCollector $event )
     {
@@ -378,18 +393,88 @@ class HINT_CLASS_EventsBridge
             return;
         }
         
+        $language = OW::getLanguage();
+        
+        $type = HINT_BOL_Service::getInstance()->getConfig("ehintType");
+        
+        $userName = BOL_UserService::getInstance()->getDisplayName($eventInfo["userId"]);
+        $userUrl = BOL_UserService::getInstance()->getDisplayName($eventInfo["userId"]);
+        
+        $userEmbed = '<a href="' . $userUrl . '">' . $userName . '</a>';
+        
+        $access = $eventInfo["accessibility"] == 1
+                    ? $language->text("hint", "event_info_access_public")
+                    : $language->text("hint", "event_info_access_by_invitation");
+        
+        $startDate = UTIL_DateTime::formatSimpleDate($eventInfo["startTimeStamp"]);
+        $endDate = UTIL_DateTime::formatSimpleDate($eventInfo["endTimeStamp"]);
+        
         switch ( $params["key"] )
         {
+            case "event-access-creator":
+                $event->setData($language->text("hint", "event_info_access_and_creator", array(
+                    "user" => $userEmbed,
+                    "accessibility" => $access
+                )));
+                break;
+            
+            case "event-access":
+                
+                $event->setData($access);
+                break;
+            
+            case "event-created-by":
+                
+                $event->setData($language->text("hint", "event_info_created_by", array(
+                    "user" => $userEmbed
+                )));
+                break;
+            
             case "event-date":
-                // TODO
+                
+                $event->setData($language->text("hint", "event_info_date", array(
+                    "startDate" => $startDate,
+                    "endDate" => $endDate
+                )));
+                break;
+            
+            case "event-start-date":
+                
+                $event->setData($language->text("hint", "event_info_start_date", array(
+                    "startDate" => $startDate
+                )));
+                break;
+            
+            case "event-end-date":
+                
+                $event->setData($language->text("hint", "event_info_end_date", array(
+                    "endDate" => $endDate
+                )));
                 break;
             
             case "event-users":
-                // TODO
+                $count = $type == "image" ? 6 : 9;
+                $userIds = $this->getUserIds($eventId, 1, $count + 1);
+
+                if ( empty($userIds) )
+                {
+                    return;
+                }
+                
+                $title = OW::getLanguage()->text("hint", "event_users_list_title");
+                $data = BOL_AvatarService::getInstance()->getDataForUserAvatars(array_slice($userIds, 0, $count), true, true, false, false);
+                $users = new HINT_CMP_UserList($data, $userIds, $title, $count);
+
+                $event->setData($users->render());
                 break;
             
-            case "base-desc":
-                // TODO
+            case "event-desc":
+                $description = UTIL_String::truncate($eventInfo["description"], 150, "...");
+                $event->setData('<span class="ow_remark ow_small">' . $description . '</span>');
+                break;
+            
+            case "event-location":
+                $event->setData($eventInfo["location"]);
                 break;
         }
     }
