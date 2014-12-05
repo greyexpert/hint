@@ -53,8 +53,6 @@ class HINT_CLASS_GheaderBridge
     
     public function isEnabled()
     {
-        return true; // TODO remove
-        
         $enabled = HINT_BOL_Service::getInstance()->getConfig("gheader_enabled");
         
         return $enabled === null ? $this->isActive() : (bool) $enabled;
@@ -98,6 +96,21 @@ class HINT_CLASS_GheaderBridge
             "cssString" => $cover->getCssString(),
             "ratio" => $cover->getRatio()
         );
+    }
+    
+    public function hasInviter()
+    {
+        return false;
+    }
+    
+    public function addStatic()
+    {
+        if ( !$this->isActive() ) return;
+        
+        $staticUrl = OW::getPluginManager()->getPlugin("gheader")->getStaticUrl();
+        
+        OW::getDocument()->addScript($staticUrl . "gheader.min.js");
+        OW::getDocument()->addStyleSheet($staticUrl . "gheader.min.css");
     }
     
     public function init()

@@ -726,7 +726,7 @@ HINT.Launcher = (function() {
 
 HINT.Inviter = function( params ) {
     
-    var DefaultInviter = function() {
+    var DefaultEventInviter = function() {
         var eventFloatBox;
 
         OW.bind('base.avatar_user_list_select',
@@ -762,8 +762,19 @@ HINT.Inviter = function( params ) {
         };
     };
     
+    var DefaultGroupInviter = function() {
+        this.show = function() {
+            console.log("Invite to group");
+        };
+    };
     
-    var inviter = params.eheader ? new EHEADER.Inviter(params) : new DefaultInviter(params);
+    var inviter;
+    
+    if ( params.for === "event" ) {
+        inviter = params.eheader ? new EHEADER.Inviter(params) : new DefaultEventInviter(params);
+    } else if ( params.for === "group" ) {
+        inviter = params.gheader ? new GHEADER.Inviter(params) : new DefaultGroupInviter(params);
+    }
     
     return {
         show: function() {
@@ -859,4 +870,13 @@ HINT.AttendContext = function( uniqId, options, changed )
         var self = $(this), type = self.data("type");
         setCurrent(type);
     });
+};
+
+
+HINT.Follower = function( params ) {
+    
+    
+    this.action = function() {
+        console.log(params);
+    };
 };

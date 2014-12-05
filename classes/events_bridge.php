@@ -197,7 +197,8 @@ class HINT_CLASS_EventsBridge
                 "inviteRsp" => OW::getRouter()->urlFor("EVENT_CTRL_Base", "inviteResponder"),
                 "eventId" => $eventId,
                 "title" => $language->text("hint", "invite_users_title"),
-                "eheader" => false
+                "eheader" => false,
+                "for" => "event"
             );
 
             if ( HINT_CLASS_EheaderBridge::getInstance()->isActive() )
@@ -300,7 +301,7 @@ class HINT_CLASS_EventsBridge
         $event->add(array(
             "key" => "event-invite",
             "active" => $inviteEvent === null ? true : $inviteEvent,
-            "label" => $language->text("hint", "button_invite_event_config")
+            "label" => $language->text("event", "invite_btn_label")
         ));
         
         // View Event

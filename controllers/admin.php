@@ -237,7 +237,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         }
         
         $lines = array(
-            HINT_BOL_Service::INFO_LINE1, HINT_BOL_Service::INFO_LINE2
+            HINT_BOL_Service::INFO_LINE0, HINT_BOL_Service::INFO_LINE1, HINT_BOL_Service::INFO_LINE2
         );
         
         $this->hintSettings(HINT_BOL_Service::ENTITY_TYPE_GROUP, 'HINT_CMP_GroupHintPreview', $headerBridge, $features, $requirements, $lines);
