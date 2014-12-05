@@ -67,6 +67,8 @@ class HINT_CLASS_EventsBridge
         $out["accessibility"] = $eventDto->whoCanView;
         $out["whoCanInvite"] = $eventDto->whoCanInvite;
         
+        $out["status"] = !isset($eventDto->status) ? 1 : $eventDto->status;
+        
         $out["userId"] = $eventDto->userId;
         $out["location"] = $eventDto->location;
         $out["title"] = $eventDto->title;
@@ -179,7 +181,7 @@ class HINT_CLASS_EventsBridge
         
         $inviteId = uniqid("invite-");
         
-        if ( $canInvite )
+        if ( $canInvite && $eventInfo["status"] == 1 )
         {
             $isEventUser = $this->isEventUser(OW::getUser()->getId(), $eventId);
             
@@ -267,11 +269,14 @@ class HINT_CLASS_EventsBridge
         
         // Event Flag
         
-        $event->add(array(
-            "key" => "event-flag",
-            "label" => $language->text("base", "flag"),
-            "attrs" => array("href" => "javascript://")
-        ));
+        if ( $this->hasContentProvider() )
+        {
+            $event->add(array(
+                "key" => "event-flag",
+                "label" => $language->text("base", "flag"),
+                "attrs" => array("href" => "javascript://")
+            ));
+        }
     }
 
     public function onCollectButtonsConfig( BASE_CLASS_EventCollector $event )
@@ -314,13 +319,15 @@ class HINT_CLASS_EventsBridge
         ));
         
         // Flag Event
-        
-        $flagEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-flag");
-        $event->add(array(
-            "key" => "event-flag",
-            "active" => $flagEvent === null ? true : $flagEvent,
-            "label" => $language->text("base", "flag")
-        ));
+        if ( $this->hasContentProvider() )
+        {
+            $flagEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-flag");
+            $event->add(array(
+                "key" => "event-flag",
+                "active" => $flagEvent === null ? true : $flagEvent,
+                "label" => $language->text("base", "flag")
+            ));
+        }
     }
     
     public function onCollectInfoConfigs( BASE_CLASS_EventCollector $event )
@@ -457,7 +464,7 @@ class HINT_CLASS_EventsBridge
                 break;
             
             case "event-desc":
-                $description = UTIL_String::truncate($language->text("hint", "info_event_desc_preview"), 150, "...");
+                $description = UTIL_String::truncate($language->text("hint", "info_event_desc_preview"), 170, "...");
                 $event->setData('<span class="ow_remark ow_small">' . $description . '</span>');
                 break;
             
@@ -542,7 +549,7 @@ class HINT_CLASS_EventsBridge
             
             case "event-users":
                 $count = $type == "image" ? 6 : 9;
-                $userIds = $this->getUserIds($eventId, 1, $count + 1);
+                $userIds = $this->getUserIds($eventId, 1, 200);
 
                 if ( empty($userIds) )
                 {
@@ -557,7 +564,7 @@ class HINT_CLASS_EventsBridge
                 break;
             
             case "event-desc":
-                $description = UTIL_String::truncate(strip_tags($eventInfo["description"]), $type == "image" ? 110 : 150, "...");
+                $description = UTIL_String::truncate(strip_tags($eventInfo["description"]), $type == "image" ? 110 : 180, "...");
                 $event->setData('<span class="ow_remark ow_small">' . $description . '</span>');
                 break;
             

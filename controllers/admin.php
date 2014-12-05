@@ -79,7 +79,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
     
     protected function hintSettings( $entityType, $previewCmpClass, $headerBridge, $features = array(), $requirements = array(), $lines = null )
     {
-        $this->setPageHeading(OW::getLanguage()->text('hint', 'admin_heading'));
+        $this->setPageHeading(OW::getLanguage()->text('hint', 'admin_hint_heading'));
         
         HINT_BOL_Service::getInstance()->saveConfig("admin_notified", 1);
         
