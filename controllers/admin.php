@@ -340,6 +340,7 @@ class HINT_ConfigurationForm extends Form
         $line0Options = HINT_BOL_Service::getInstance()->getInfoLineSettings($entityType, HINT_BOL_Service::INFO_LINE0);
         
         $field = new Selectbox("info_" . HINT_BOL_Service::INFO_LINE0);
+        $field->setInvitation($language->text("hint", "info_line_empty"));
         $field->setId("info0");
         
         foreach ( $line0Options as $lineOption )
@@ -376,6 +377,7 @@ class HINT_ConfigurationForm extends Form
         $line1Options = HINT_BOL_Service::getInstance()->getInfoLineSettings($entityType, HINT_BOL_Service::INFO_LINE1);
 
         $field = new Selectbox("info_" . HINT_BOL_Service::INFO_LINE1);
+        $field->setInvitation($language->text("hint", "info_line_empty"));
         $field->setId("info1");
         
         foreach ( $line1Options as $lineOption )
@@ -405,6 +407,7 @@ class HINT_ConfigurationForm extends Form
         $line2Options = HINT_BOL_Service::getInstance()->getInfoLineSettings($entityType, HINT_BOL_Service::INFO_LINE2);
 
         $field = new Selectbox("info_" . HINT_BOL_Service::INFO_LINE2);
+        $field->setInvitation($language->text("hint", "info_line_empty"));
         $field->setId("info2");
         
         foreach ( $line2Options as $lineOption )

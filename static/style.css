@@ -160,15 +160,15 @@ a.ehint-date {
     margin-left: 4px;
 }
 
-.ehint-type-date.ehint-on-lines .hb-info-content {
+.ehint-type-date.hint-on-lines .hb-info-content {
     display: none;
 }
 
-.ehint-type-date.ehint-on-lines .ehint-date {
+.ehint-type-date.hint-on-lines .ehint-date {
     margin-top: -60px;
 }
 
-.ehint-type-date.ehint-on-lines .uhint-wrap {
+.ehint-type-date.hint-on-lines .uhint-wrap {
     min-height: 0;
 }
 
@@ -176,7 +176,7 @@ a.ehint-date {
     margin-top: -66px;
 }
 
-.ehint-type-date.ehint-on-lines .uhb-head {
+.ehint-type-date.hint-on-lines .uhb-head {
     border-bottom-width: 0px;
 }
 
@@ -186,10 +186,10 @@ a.ehint-date {
     height: 70px;
 }
 
-.ehint-type-date.ehint-on-lines .uhint-bottom-corner,
-.ehint-type-date.ehint-on-lines .uhint-top-corner,
-.ehint-type-date.ehint-on-lines .uhint-right-corner,
-.ehint-type-date.ehint-on-lines .uhb-head {
+.ehint-type-date.hint-on-lines .uhint-bottom-corner,
+.ehint-type-date.hint-on-lines .uhint-top-corner,
+.ehint-type-date.hint-on-lines .uhint-right-corner,
+.ehint-type-date.hint-on-lines .uhb-head {
     background: none;
 }
 

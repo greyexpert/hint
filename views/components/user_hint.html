@@ -22,7 +22,7 @@
 
 {/style}
 
-<div id="{$uniqId}" class="uhint-wrap {if empty($cover)}uhint-no-cover{else}uhint-has-cover{/if}">
+<div id="{$uniqId}" class="uhint-wrap {if !$options.hasLines}hint-on-lines{/if} {if $options.has0line}hint-0-line{/if} {if empty($cover)}uhint-no-cover{else}uhint-has-cover{/if}">
     <div class="uhint-body">
 
         <div class="uhb-head ow_border" {if !empty($cover)}style="height: {$cover.height}px;"{/if}>
