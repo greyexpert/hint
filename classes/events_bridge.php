@@ -391,9 +391,6 @@ class HINT_CLASS_EventsBridge
             return;
         }
         
-        $startDate = UTIL_DateTime::formatSimpleDate(strtotime("1/1/15"));
-        $endDate = UTIL_DateTime::formatSimpleDate(strtotime("12/31/15"));
-        
         $userEmbed = '<a href="javascript://">Angela Smith</a>';
         
         switch ( $params["key"] )
@@ -421,22 +418,22 @@ class HINT_CLASS_EventsBridge
             case "event-date":
                 
                 $event->setData($language->text("hint", "event_info_date", array(
-                    "startDate" => $startDate,
-                    "endDate" => $endDate
+                    "startDate" => UTIL_DateTime::formatSimpleDate(strtotime("1/1/15"), true),
+                    "endDate" => UTIL_DateTime::formatSimpleDate(strtotime("12/31/15"), true)
                 )));
                 break;
             
             case "event-start-date":
                 
                 $event->setData($language->text("hint", "event_info_start_date", array(
-                    "startDate" => $startDate
+                    "startDate" => UTIL_DateTime::formatSimpleDate(strtotime("1/1/15"))
                 )));
                 break;
             
             case "event-end-date":
                 
                 $event->setData($language->text("hint", "event_info_end_date", array(
-                    "endDate" => $endDate
+                    "endDate" => UTIL_DateTime::formatSimpleDate(strtotime("12/31/15"))
                 )));
                 break;
             
@@ -499,9 +496,6 @@ class HINT_CLASS_EventsBridge
                     ? $language->text("hint", "event_info_access_public")
                     : $language->text("hint", "event_info_access_by_invitation");
         
-        $startDate = UTIL_DateTime::formatSimpleDate($eventInfo["startTimeStamp"]);
-        $endDate = UTIL_DateTime::formatSimpleDate($eventInfo["endTimeStamp"]);
-        
         switch ( $params["key"] )
         {
             case "event-access-creator":
@@ -526,22 +520,22 @@ class HINT_CLASS_EventsBridge
             case "event-date":
                 
                 $event->setData($language->text("hint", "event_info_date", array(
-                    "startDate" => $startDate,
-                    "endDate" => $endDate
+                    "startDate" => UTIL_DateTime::formatSimpleDate($eventInfo["startTimeStamp"], true),
+                    "endDate" => UTIL_DateTime::formatSimpleDate($eventInfo["endTimeStamp"], true)
                 )));
                 break;
             
             case "event-start-date":
                 
                 $event->setData($language->text("hint", "event_info_start_date", array(
-                    "startDate" => $startDate
+                    "startDate" => UTIL_DateTime::formatSimpleDate($eventInfo["startTimeStamp"])
                 )));
                 break;
             
             case "event-end-date":
                 
                 $event->setData($language->text("hint", "event_info_end_date", array(
-                    "endDate" => $endDate
+                    "endDate" => UTIL_DateTime::formatSimpleDate($eventInfo["endTimeStamp"])
                 )));
                 break;
             
@@ -562,7 +556,7 @@ class HINT_CLASS_EventsBridge
                 break;
             
             case "event-desc":
-                $description = UTIL_String::truncate($eventInfo["description"], 150, "...");
+                $description = UTIL_String::truncate(strip_tags($eventInfo["description"]), $type == "image" ? 110 : 150, "...");
                 $event->setData('<span class="ow_remark ow_small">' . $description . '</span>');
                 break;
             
