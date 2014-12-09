@@ -244,25 +244,28 @@ class HINT_CLASS_GroupsBridge
         
         // Join Group button
         
-        $joinId = uniqid("join-");
-        $event->add(array(
-            "key" => "group-join",
-            "label" => $isGroupUser 
-                ? $language->text("hint", "group_leave_btn_label")
-                : $language->text("hint", "group_join_btn_label"),
-            "attrs" => array(
-                "id" => $joinId,
-                "href" => "javascript://"
-            )
-        ));
-        
-        $js->addScript('groupHint.setOptions({$options});', array(
-            "options" => array(
-                "joinBtnId" => $joinId
-            )
-        ));
+        if ( !($isCreator && $isGroupUser) )
+        {
+            $joinId = uniqid("join-");
+            $event->add(array(
+                "key" => "group-join",
+                "label" => $isGroupUser 
+                    ? $language->text("hint", "group_leave_btn_label")
+                    : $language->text("hint", "group_join_btn_label"),
+                "attrs" => array(
+                    "id" => $joinId,
+                    "href" => "javascript://"
+                )
+            ));
 
-        $js->jQueryEvent("#" . $joinId, "click", "groupHint.toggleJoin();");
+            $js->addScript('groupHint.setOptions({$options});', array(
+                "options" => array(
+                    "joinBtnId" => $joinId
+                )
+            ));
+
+            $js->jQueryEvent("#" . $joinId, "click", "groupHint.toggleJoin();");
+        }
         
         
         
