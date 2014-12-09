@@ -725,13 +725,18 @@ HINT.Launcher = (function() {
 })();
 
 HINT.Inviter = function( params ) {
-    
+       
     var DefaultEventInviter = function() {
-        var eventFloatBox;
+        var self = this;
+        
+        this.floatBox = null;
 
         OW.bind('base.avatar_user_list_select',
             function( list ) {
-                eventFloatBox.close();
+                if ( !self.floatBox ) return;
+                
+                self.floatBox.close();
+                self.floatBox = null;
                 
                 $.ajax({
                     type: 'POST',
@@ -754,7 +759,7 @@ HINT.Inviter = function( params ) {
         );
         
         this.show = function() {
-            eventFloatBox = OW.ajaxFloatBox('EVENT_CMP_InviteUserListSelect', [params.eventId], {
+            this.floatBox = OW.ajaxFloatBox('EVENT_CMP_InviteUserListSelect', [params.eventId], {
                 width:600,
                 iconClass: 'ow_ic_user',
                 title: params.title
@@ -763,8 +768,48 @@ HINT.Inviter = function( params ) {
     };
     
     var DefaultGroupInviter = function() {
+        
+        var self = this;
+        this.floatBox = null;
+        this.userIdList = params.userList;
+        
+        OW.bind('base.avatar_user_list_select',
+            function(list)
+            {
+                if ( !self.floatBox ) return;
+                
+                self.floatBox.close();
+                self.floatBox = null;
+
+                $.ajax({
+                    type: 'POST',
+                    url: params.inviteRsp,
+                    data: {"groupId": params.groupId, "userIdList": JSON.stringify(list), "allIdList": JSON.stringify(params.userList)},
+                    dataType: 'json',
+                    success : function(data)
+                    {
+                        if( data.messageType === 'error' )
+                        {
+                            OW.error(data.message);
+                        }
+                        else
+                        {
+                            OW.info(data.message);
+                            self.userIdList = data.allIdList;
+                        }
+                    }
+                });
+            }
+        );
+        
         this.show = function() {
-            console.log("Invite to group");
+            this.floatBox = OW.ajaxFloatBox('BASE_CMP_AvatarUserListSelect', [this.userIdList],
+            {
+                width:600,
+                height:350,
+                iconClass: 'ow_ic_user',
+                title: params.title
+            });
         };
     };
     
@@ -873,10 +918,98 @@ HINT.AttendContext = function( uniqId, options, changed )
 };
 
 
-HINT.Follower = function( params ) {
-    
-    
-    this.action = function() {
-        console.log(params);
+HINT.GroupHint = (function() {
+
+    function query(rsp, params, callback) {
+        return $.ajax({
+            type: 'POST',
+            url: rsp,
+            data: params,
+            dataType: 'json',
+            success: function(r) {
+                if (r.message) {
+                    OW.info(r.message);
+                }
+                
+                if (r.error) {
+                    OW.info(r.error);
+                }
+                
+                callback && callback(r);
+            }
+        });
     };
-};
+
+    var proto = {};
+
+    function Constructor( options )
+    {
+        this.setOptions(options);
+        
+        this.groupId = this.options["groupId"];
+        this.userId = this.options["userId"];
+        
+        this.inviter = null;
+    }
+    
+    proto.setOptions = function( options ) {
+        this.options = $.extend({}, options, this.options || {});
+    };
+    
+    proto.flag = function() {
+        OW.flagContent(this.options.entityType, this.groupId);
+    };
+    
+    proto.invite = function() {
+        this.inviter = this.inviter || new HINT.Inviter({
+            inviteRsp: this.options.rsp.invite,
+            title: this.options.text.inviteTitle,
+            groupId: this.groupId,
+            gheader: this.options.gheader ? 1 : 0,
+            userList: this.options.inviteUsers,
+            "for": "group"
+        });
+        
+        this.inviter.show();
+    };
+            
+    proto.toggleJoin = function() {
+        this.options.isGroupUser = !this.options.isGroupUser;
+        
+        var label = this.options.text[this.options.isGroupUser ? "leave" : "join"];
+        $("#" + this.options.joinBtnId).text(label);
+        
+        query(this.options.rsp.join, {
+            groupId: this.groupId,
+            userId: this.userId,
+            add: this.options.isGroupUser ? 1 : 0
+        }, $.proxy(function(r) {
+            var inviteBtn = this.options.inviteBtnId 
+                    ? $("#" + this.options.inviteBtnId)
+                    : null;
+                    
+            inviteBtn && inviteBtn[r.invite ? "show" : "hide"]();
+            
+            this.options.followed = r.followed;
+            $("#" + this.options.followBtnId)
+                    .text(this.options.text[this.options.followed ? "unfollow" : "follow"]);
+            
+        }, this));
+    };
+    
+    proto.toggleFollow = function() {
+        this.options.followed = !this.options.followed;
+        
+        var label = this.options.text[this.options.followed ? "unfollow" : "follow"];
+        $("#" + this.options.followBtnId).text(label);
+        
+        query(this.options.rsp.follow, {
+            groupId: this.groupId,
+            userId: this.userId,
+            add: this.options.followed ? 1 : 0
+        });
+    };
+    
+    Constructor.prototype = proto;
+    return Constructor;
+})();

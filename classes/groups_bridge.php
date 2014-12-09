@@ -74,9 +74,36 @@ class HINT_CLASS_GroupsBridge
         return $out;
     }
     
+    
+    
     public function isCurrentUserCanInvite( $groupId )
     {
-        GROUPS_BOL_Service::getInstance()->isCurrentUserInvite($groupId);
+        return GROUPS_BOL_Service::getInstance()->isCurrentUserInvite($groupId);
+    }
+    
+    public function isGroupUser( $userId, $groupId )
+    {
+        return GROUPS_BOL_Service::getInstance()->findUser($groupId, $userId) !== null;
+    }
+    
+    public function isInvitedUser( $userId, $groupId )
+    {
+        return GROUPS_BOL_Service::getInstance()->findInvite($groupId, $userId) !== null;
+    }
+    
+    public function markInviteViewed( $groupId, $userId, $inviterId = null )
+    {
+        GROUPS_BOL_Service::getInstance()->markInviteAsViewed($groupId, $userId, $inviterId);
+    }
+    
+    public function addUser( $groupId, $userId )
+    {
+        GROUPS_BOL_Service::getInstance()->addUser($groupId, $userId);
+    }
+    
+    public function deleteUser( $groupId, $userId )
+    {
+        GROUPS_BOL_Service::getInstance()->deleteUser($groupId, $userId);
     }
     
     public function hasContentProvider()
@@ -90,7 +117,55 @@ class HINT_CLASS_GroupsBridge
                 
         return array_slice($users, 0, $count);
     }
+    
+    public function getUsersForInvite( $groupId, $userId )
+    {
+        $users = null;
+
+        if ( OW::getEventManager()->call('plugin.friends') )
+        {
+            $users = OW::getEventManager()->call('plugin.friends.get_friend_list', array(
+                'userId' => $userId,
+                'count' => 100
+            ));
+        }
+
+        if ( $users === null )
+        {
+            $users = array();
+            $userDtos = BOL_UserService::getInstance()->findRecentlyActiveList(0, 100);
+
+            foreach ( $userDtos as $u )
+            {
+                if ( $u->id != $userId )
+                {
+                    $users[] = $u->id;
+                }
+            }
+        }
+
+        $idList = array();
+
+        if ( !empty($users) )
+        {
+            $groupUsers = GROUPS_BOL_Service::getInstance()->findGroupUserIdList($groupId);
+            $invitedList = GROUPS_BOL_Service::getInstance()->findInvitedUserIdList($groupId, $userId);
+
+            foreach ( $users as $uid )
+            {
+                if ( in_array($uid, $groupUsers) || in_array($uid, $invitedList) )
+                {
+                    continue;
+                }
+
+                $idList[] = $uid;
+            }
+        }
         
+        return $users;
+    }
+
+
     public function onCollectButtons( BASE_CLASS_EventCollector $event )
     {
         $params = $event->getParams();
@@ -112,6 +187,31 @@ class HINT_CLASS_GroupsBridge
         
         $isCreator = $groupInfo["userId"] == OW::getUser()->getId();
         $js = new UTIL_JsGenerator();
+        
+        $isGroupUser = $this->isGroupUser(OW::getUser()->getId(), $groupId);
+        
+        $hintOptions = array(
+            "groupId" => $groupId,
+            "userId" => OW::getUser()->getId(),
+            "entityType" => "group",
+            "gheader" => false,
+            "isGroupUser" => $isGroupUser,
+            "rsp" => array(
+                "invite" => OW::getRouter()->urlFor('GROUPS_CTRL_Groups', 'invite'),
+                "follow" => OW::getRouter()->urlFor('HINT_CTRL_Common', 'groupFollow'),
+                "join" => OW::getRouter()->urlFor('HINT_CTRL_Common', 'groupJoin')
+            ),
+            "text" => array(
+                "inviteTitle" => $language->text("hint", "invite_users_title"),
+                "follow" => $language->text('groups', 'feed_group_follow'),
+                "unfollow" => $language->text('groups', 'feed_group_unfollow'),
+                "join" => $language->text("hint", "group_join_btn_label"),
+                "leave" => $language->text("hint", "group_leave_btn_label")
+            )
+        );
+        $js->newObject("groupHint", "HINT.GroupHint", array(
+            $hintOptions
+        ));
         
         // View Group button
         
@@ -138,10 +238,32 @@ class HINT_CLASS_GroupsBridge
                 )
             ));
             
-            $js->addScript('$("#' . $flagId . '").click(function() { OW.flagContent("group", {$groupId}) });', array(
-                "groupId" => $groupId
-            ));
+            $js->jQueryEvent("#" . $flagId, "click", "groupHint.flag();");
         }
+        
+        
+        // Join Group button
+        
+        $joinId = uniqid("join-");
+        $event->add(array(
+            "key" => "group-join",
+            "label" => $isGroupUser 
+                ? $language->text("hint", "group_leave_btn_label")
+                : $language->text("hint", "group_join_btn_label"),
+            "attrs" => array(
+                "id" => $joinId,
+                "href" => "javascript://"
+            )
+        ));
+        
+        $js->addScript('groupHint.setOptions({$options});', array(
+            "options" => array(
+                "joinBtnId" => $joinId
+            )
+        ));
+
+        $js->jQueryEvent("#" . $joinId, "click", "groupHint.toggleJoin();");
+        
         
         
         // Invite to Group button
@@ -158,32 +280,41 @@ class HINT_CLASS_GroupsBridge
                     "style" => !$this->isCurrentUserCanInvite($groupId) ? "display: none;" : ""
                 )
             ));
-
-            $options = array(
-                "inviteRsp" => OW::getRouter()->urlFor("HINT_CTRL_Common", "groupInvite"),
-                "groupId" => $groupId,
-                "title" => $language->text("hint", "invite_users_title"),
-                "gheader" => false,
-                "for" => "group"
-            );
+            
+            $js->addScript('groupHint.setOptions({$options});', array(
+                "options" => array(
+                    "inviteBtnId" => $inviteId
+                )
+            ));
 
             if ( HINT_CLASS_GheaderBridge::getInstance()->isActive() 
                     && HINT_CLASS_GheaderBridge::getInstance()->hasInviter() )
             {
                 HINT_CLASS_GheaderBridge::getInstance()->addStatic();
-                $options["gheader"] = true;
+                
+                $js->addScript('groupHint.setOptions({$options});', array(
+                    "options" => array(
+                        "gheader" => true
+                    )
+                ));
             }
-
-            $js->newObject("inviter", "HINT.Inviter", array($options));
-            $js->jQueryEvent("#" . $inviteId, "click", "inviter.show(); return false;");
+            else
+            {
+                $users = $this->getUsersForInvite($groupId, OW::getUser()->getId());
+                $js->addScript('groupHint.setOptions({$options});', array(
+                    "options" => array(
+                        "inviteUsers" => $users
+                    )
+                ));
+            }
+            
+            $js->jQueryEvent("#" . $inviteId, "click", "groupHint.invite();");
         }
         
         // Follow Group
         
         if ( OW::getEventManager()->call('feed.is_inited') )
         {
-            $followRsp = OW::getRouter()->urlFor('HINT_CTRL_Common', 'groupFollow');
-
             $followId = uniqid("follow-");
             $followBtn = array(
                 "key" => "group-follow",
@@ -199,16 +330,10 @@ class HINT_CLASS_GroupsBridge
                 'feedId' => $groupId
             ));
             
-            $js->newObject("follower", "HINT.Follower", array(
-                array(
-                    "uniqId" => $followId,
-                    "rsp" => $followRsp,
+            $js->addScript('groupHint.setOptions({$options});', array(
+                "options" => array(
                     "followed" => $followed,
-                    "groupId" => $groupId,
-                    "texts" => array(
-                        "follow" => $language->text('groups', 'feed_group_follow'),
-                        "unfollow" => $language->text('groups', 'feed_group_unfollow')
-                    )
+                    "followBtnId" => $followId
                 )
             ));
             
@@ -218,7 +343,7 @@ class HINT_CLASS_GroupsBridge
             
             $event->add($followBtn);
             
-            $js->addScript('$("#' . $followId . '").click(function() { follower.action(); });');
+            $js->jQueryEvent("#" . $followId, "click", "groupHint.toggleFollow();");
         }
         
         $jsStr = $js->generateJs();
