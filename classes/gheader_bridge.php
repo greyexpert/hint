@@ -100,7 +100,7 @@ class HINT_CLASS_GheaderBridge
     
     public function hasInviter()
     {
-        return false;
+        return class_exists("GHEADER_CMP_UserSelector");
     }
     
     public function addStatic()
@@ -109,8 +109,11 @@ class HINT_CLASS_GheaderBridge
         
         $staticUrl = OW::getPluginManager()->getPlugin("gheader")->getStaticUrl();
         
-        OW::getDocument()->addScript($staticUrl . "gheader.min.js");
-        OW::getDocument()->addStyleSheet($staticUrl . "gheader.min.css");
+        //OW::getDocument()->addScript($staticUrl . "gheader.min.js");
+        //OW::getDocument()->addStyleSheet($staticUrl . "gheader.min.css");
+        
+        OW::getDocument()->addScript($staticUrl . "gheader.js");
+        OW::getDocument()->addStyleSheet($staticUrl . "gheader.css");
     }
     
     public function init()

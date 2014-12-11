@@ -818,6 +818,7 @@ HINT.Inviter = function( params ) {
     if ( params.for === "event" ) {
         inviter = params.eheader ? new EHEADER.Inviter(params) : new DefaultEventInviter(params);
     } else if ( params.for === "group" ) {
+        console.log(params.gheader);
         inviter = params.gheader ? new GHEADER.Inviter(params) : new DefaultGroupInviter(params);
     }
     
@@ -944,6 +945,8 @@ HINT.GroupHint = (function() {
 
     function Constructor( options )
     {
+        this.options = {};
+        
         this.setOptions(options);
         
         this.groupId = this.options["groupId"];
@@ -953,7 +956,7 @@ HINT.GroupHint = (function() {
     }
     
     proto.setOptions = function( options ) {
-        this.options = $.extend({}, options, this.options || {});
+        $.extend(this.options, options);
     };
     
     proto.flag = function() {
