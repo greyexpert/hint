@@ -114,9 +114,16 @@ class HINT_CLASS_ParseManager
         $hint = new HINT_CMP_Hint();
         OW::getDocument()->prependBody($hint->render());
     }
+    
+    public function afterPluginsInit()
+    {
+        HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_UserParser());
+    }
 
     public function init()
     {
+        OW::getEventManager()->bind(OW_EventManager::ON_PLUGINS_INIT, array($this, 'afterPluginsInit'));
+        
         OW::getEventManager()->bind(OW_EventManager::ON_FINALIZE, array($this, 'initStatic'));
         OW::getEventManager()->bind(OW_EventManager::ON_BEFORE_DOCUMENT_RENDER, array($this, 'beforeRender'));
     }
