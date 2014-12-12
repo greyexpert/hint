@@ -53,14 +53,14 @@ class HINT_CLASS_UheaderBridge
     
     public function isEnabled()
     {
-        $enabled = HINT_BOL_Service::getInstance()->getConfig("uhint_enabled");
+        $enabled = HINT_BOL_Service::getInstance()->getConfig("uheader_enabled");
         
         return $enabled === null ? $this->isActive() : (bool) $enabled;
     }
     
     public function setEnabled( $yes = true )
     {
-        HINT_BOL_Service::getInstance()->saveConfig("uhint_enabled", $yes ? 1 : 0);
+        HINT_BOL_Service::getInstance()->saveConfig("uheader_enabled", $yes ? 1 : 0);
     }
     
     public function getCoverForUser( $userId, $forWidth = null )

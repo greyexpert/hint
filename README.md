@@ -1,15 +1,6 @@
 User Hint
 ====
 
-Adds hints for links to user. Has very flexible configuration page with live preview and lot of customization options.
-
-**Features:**
-
-* Send message
-* Send gift
-* Follow user
-* Friends
-* Cover Image
-* Avatar History
-* Profile Questions
-* User Credits
+Adds hints for links to users, groups and events. Has very flexible configuration page with live preview and lot of customization options. 
+Each hint type has its own configuration page with lots of different features. 
+With every update new features are added.

@@ -252,6 +252,26 @@ class HINT_CLASS_EventsBridge
 
         $language = OW::getLanguage();
 
+        
+        // Event Flag
+        
+        if ( $this->hasContentProvider() )
+        {
+            $event->add(array(
+                "key" => "event-flag",
+                "label" => $language->text("base", "flag"),
+                "attrs" => array("href" => "javascript://")
+            ));
+        }
+        
+        // Event View
+        
+        $event->add(array(
+            "key" => "event-view",
+            "label" => $language->text("hint", "button_view_event_label"),
+            "attrs" => array("href" => "javascript://")
+        ));
+        
         // Event Invite
         
         $event->add(array(
@@ -268,25 +288,6 @@ class HINT_CLASS_EventsBridge
             "key" => "event-attend",
             "html" => '<li id="event-attend" class="h-preview">' . $contextBtn->render() . '</li>'
         ));
-        
-        // Event View
-        
-        $event->add(array(
-            "key" => "event-view",
-            "label" => $language->text("hint", "button_view_event_label"),
-            "attrs" => array("href" => "javascript://")
-        ));
-        
-        // Event Flag
-        
-        if ( $this->hasContentProvider() )
-        {
-            $event->add(array(
-                "key" => "event-flag",
-                "label" => $language->text("base", "flag"),
-                "attrs" => array("href" => "javascript://")
-            ));
-        }
     }
 
     public function onCollectButtonsConfig( BASE_CLASS_EventCollector $event )
@@ -324,7 +325,7 @@ class HINT_CLASS_EventsBridge
         $viewEvent = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-view");
         $event->add(array(
             "key" => "event-view",
-            "active" => $viewEvent === null ? false : $viewEvent,
+            "active" => $viewEvent === null ? true : $viewEvent,
             "label" => $language->text("hint", "button_view_event_config")
         ));
         

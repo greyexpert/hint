@@ -378,11 +378,11 @@ class HINT_CLASS_GroupsBridge
 
         $language = OW::getLanguage();
 
-        // Event Invite
+        // Group Flag
         
         $event->add(array(
-            "key" => "group-invite",
-            "label" => $language->text("groups", "invite_btn_label"),
+            "key" => "group-flag",
+            "label" => $language->text("base", "flag"),
             "attrs" => array("href" => "javascript://")
         ));
         
@@ -394,27 +394,28 @@ class HINT_CLASS_GroupsBridge
             "attrs" => array("href" => "javascript://")
         ));
         
-        // Group Flag
+        // Group Follow
         
         $event->add(array(
-            "key" => "group-flag",
-            "label" => $language->text("base", "flag"),
+            "key" => "group-follow",
+            "label" => $language->text("groups", "feed_group_follow"),
             "attrs" => array("href" => "javascript://")
         ));
+        
+        // Event Invite
+        
+        $event->add(array(
+            "key" => "group-invite",
+            "label" => $language->text("groups", "invite_btn_label"),
+            "attrs" => array("href" => "javascript://")
+        ));
+        
         
         // Group Join
         
         $event->add(array(
             "key" => "group-join",
             "label" => $language->text("groups", "widget_join_button"),
-            "attrs" => array("href" => "javascript://")
-        ));
-        
-        // Group Follow
-        
-        $event->add(array(
-            "key" => "group-follow",
-            "label" => $language->text("groups", "feed_group_follow"),
             "attrs" => array("href" => "javascript://")
         ));
     }
@@ -445,7 +446,7 @@ class HINT_CLASS_GroupsBridge
         $viewGroup = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_GROUP, "group-view");
         $event->add(array(
             "key" => "group-view",
-            "active" => $viewGroup === null ? false : $viewGroup,
+            "active" => $viewGroup === null ? true : $viewGroup,
             "label" => $language->text("hint", "button_view_group_config")
         ));
         

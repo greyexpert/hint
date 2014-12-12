@@ -293,7 +293,10 @@ class HINT_BOL_Service
         
         if ( $value === null )
         {
-            return null;
+            return array(
+                "key" => null,
+                "question" => null
+            );
         }
         
         return json_decode($value, true);

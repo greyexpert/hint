@@ -1,3 +1,18 @@
+Hint 2000, 2014-12-12:
+
+New Hint types:
+- Group hint
+- Event hint
+
+Enhancements:
+- Private profiles support
+- Minor enhancements
+
+Bug Fixes:
+- OxArt Advanced SEO conflict resolved
+- Minor fixes
+
+
 User Hint 1670, 2014-7-10:
 
 New Info line options:
