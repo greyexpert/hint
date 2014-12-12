@@ -185,6 +185,23 @@ class HINT_CLASS_GroupsBridge
             return;
         }
         
+        // View Group button
+        
+        $event->add(array(
+            "key" => "group-view",
+            "label" => $language->text("hint", "button_view_group_label"),
+            "attrs" => array(
+                "href" => $groupInfo["url"],
+                "target" => "_blank"
+            )
+        ));
+        
+        if ( !OW::getUser()->isAuthenticated() )
+        {
+            return;
+        }
+        
+        
         $isCreator = $groupInfo["userId"] == OW::getUser()->getId();
         $js = new UTIL_JsGenerator();
         
@@ -212,18 +229,7 @@ class HINT_CLASS_GroupsBridge
         $js->newObject("groupHint", "HINT.GroupHint", array(
             $hintOptions
         ));
-        
-        // View Group button
-        
-        $event->add(array(
-            "key" => "group-view",
-            "label" => $language->text("hint", "button_view_group_label"),
-            "attrs" => array(
-                "href" => $groupInfo["url"],
-                "target" => "_blank"
-            )
-        ));
-        
+                
         // Flag Group button
         
         if ( !$isCreator && $groupInfo["status"] == "active" )

@@ -140,9 +140,6 @@ class HINT_CLASS_EventsBridge
             return;
         }
         
-        $isCreator = $eventInfo["userId"] == OW::getUser()->getId();
-        $js = new UTIL_JsGenerator();
-        
         // View Event button
         
         $event->add(array(
@@ -153,6 +150,14 @@ class HINT_CLASS_EventsBridge
                 "target" => "_blank"
             )
         ));
+        
+        if ( !OW::getUser()->isAuthenticated() )
+        {
+            return;
+        }
+        
+        $isCreator = $eventInfo["userId"] == OW::getUser()->getId();
+        $js = new UTIL_JsGenerator();
         
         // Flag Event button
         
