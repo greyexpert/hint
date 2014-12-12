@@ -107,13 +107,11 @@ class HINT_CLASS_GheaderBridge
     {
         if ( !$this->isActive() ) return;
         
-        $staticUrl = OW::getPluginManager()->getPlugin("gheader")->getStaticUrl();
+        $plugin = OW::getPluginManager()->getPlugin("gheader");
+        $staticUrl = $plugin->getStaticUrl();
         
-        //OW::getDocument()->addScript($staticUrl . "gheader.min.js");
-        //OW::getDocument()->addStyleSheet($staticUrl . "gheader.min.css");
-        
-        OW::getDocument()->addScript($staticUrl . "gheader.js");
-        OW::getDocument()->addStyleSheet($staticUrl . "gheader.css");
+        OW::getDocument()->addScript($staticUrl . "gheader.min.js?" . $plugin->getDto()->build);
+        OW::getDocument()->addStyleSheet($staticUrl . "gheader.min.css?" . $plugin->getDto()->build);
     }
     
     public function init()

@@ -55,10 +55,11 @@ class HINT_CLASS_EheaderBridge
     {
         if ( !$this->isActive() ) return;
         
-        $staticUrl = OW::getPluginManager()->getPlugin("eheader")->getStaticUrl();
+        $plugin = OW::getPluginManager()->getPlugin("eheader");
+        $staticUrl = $plugin->getStaticUrl();
         
-        OW::getDocument()->addScript($staticUrl . "eheader.min.js");
-        OW::getDocument()->addStyleSheet($staticUrl . "eheader.min.css");
+        OW::getDocument()->addScript($staticUrl . "eheader.min.js?" . $plugin->getDto()->build);
+        OW::getDocument()->addStyleSheet($staticUrl . "eheader.min.css?" . $plugin->getDto()->build);
     }
 
     public function isEnabled()
