@@ -54,7 +54,45 @@ class HINT_CLASS_UserParser extends HINT_CLASS_Parser
 
     public function renderHint( array $params )
     {
-        $hint = new HINT_CMP_UserHint($params['userId']);
+        $isModerator = OW::getUser()->isAuthorized("base") || OW::getUser()->isAdmin();
+        $noPermission = null;
+        
+        if ( !$isModerator )
+        {
+            if ( !OW::getUser()->isAuthorized('base', 'view_profile') )
+            {
+                $status = BOL_AuthorizationService::getInstance()->getActionStatus('base', 'view_profile');
+                
+                $noPermission = $status['status'] == BOL_AuthorizationService::STATUS_PROMOTED 
+                        ? $status['msg']
+                        : null;
+            }
+            
+            $eventParams = array(
+                'action' => 'base_view_profile',
+                'ownerId' => $params['userId'],
+                'viewerId' => OW::getUser()->getId()
+            );
+
+            try
+            {
+                OW::getEventManager()->getInstance()->call('privacy_check_permission', $eventParams);
+            }
+            catch ( RedirectException $e )
+            {
+                $noPermission = OW::getLanguage()->text("hint", "private_profile_message");
+            }
+        }
+                
+        if ( $noPermission === null )
+        {
+            $hint = new HINT_CMP_UserHint($params['userId']);
+        }
+        else
+        {
+            $avatarData = BOL_AvatarService::getInstance()->getDataForUserAvatars(array($params['userId']), true, false, true, false);
+            $hint = new HINT_CMP_PrivateHint(HINT_BOL_Service::ENTITY_TYPE_USER, $params['userId'], $avatarData[$params['userId']], $noPermission);
+        }
 
         return array(
             'body' => $hint->render(),

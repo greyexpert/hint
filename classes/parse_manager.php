@@ -117,7 +117,22 @@ class HINT_CLASS_ParseManager
     
     public function afterPluginsInit()
     {
-        HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_UserParser());
+        $authorized = false;
+        
+        if ( !OW::getUser()->isAuthorized('base', 'view_profile') )
+        {
+            $status = BOL_AuthorizationService::getInstance()->getActionStatus('base', 'view_profile');
+            $authorized = $status['status'] == BOL_AuthorizationService::STATUS_PROMOTED;
+        }
+        else 
+        {
+            $authorized = true;
+        }
+        
+        if ( $authorized )
+        {
+            HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_UserParser());
+        }
     }
 
     public function init()

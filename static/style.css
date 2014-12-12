@@ -13,6 +13,35 @@
  * @package hint.static
  */
 
+/* Private hint */
+
+.hint-private-hint .uhint-avatar .uhint-avatar-image {
+    width: 50px;
+    height: 50px;
+    
+    background-size: 100%;
+}
+
+.hint-private-hint.uhint-wrap .uhint-avatar {
+    margin-top: 0px;
+    margin-right: 10px;
+}
+
+.hint-private-hint.uhint-wrap {
+    min-height: 65px;
+    padding-top: 5px;
+}
+
+.ph-info {
+    float: left;
+    padding-top: 5px;
+    width: 270px;
+}
+
+.ph-info-title {
+    font-weight: bold;
+}
+
 /* Context buttons ------------------------------------------------------------- */
 div.h-context-w {
     margin-left: 0px;
