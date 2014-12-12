@@ -818,7 +818,6 @@ HINT.Inviter = function( params ) {
     if ( params.for === "event" ) {
         inviter = params.eheader ? new EHEADER.Inviter(params) : new DefaultEventInviter(params);
     } else if ( params.for === "group" ) {
-        console.log(params.gheader);
         inviter = params.gheader ? new GHEADER.Inviter(params) : new DefaultGroupInviter(params);
     }
     
