@@ -55,16 +55,37 @@ class HINT_CLASS_McomposeBridge
     {
         $params = $event->getParams();
 
-        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        $button = null;
+        
+        switch ($params["entityType"])
         {
-            return;
+            case HINT_BOL_Service::ENTITY_TYPE_USER:
+                $button = $this->collectUserButton($params["entityId"]);
+                
+                break;
+            
+            case HINT_BOL_Service::ENTITY_TYPE_GROUP:
+                $button = $this->collectGroupButton($params["entityId"]);
+                
+                break;
+            
+            case HINT_BOL_Service::ENTITY_TYPE_EVENT:
+                $button = $this->collectEventButton($params["entityId"]);
+                
+                break;
         }
 
-        $userId = $params["entityId"];
-
+        if ( $button !== null )
+        {
+            $event->add($button);
+        }
+    }
+    
+    public function collectUserButton( $userId )
+    {
         if ( !OW::getUser()->isAuthenticated() || $userId == OW::getUser()->getId() )
         {
-            return;
+            return null;
         }
 
         $uniqId = uniqid("hint-mc-");
@@ -97,55 +118,150 @@ class HINT_CLASS_McomposeBridge
 
         OW::getDocument()->addOnloadScript($js);
 
-        $button = array(
+        return array(
             "key" => "mcompose",
-            //"label" => OW::getLanguage()->text('mailbox', 'create_conversation_button'),
             "label" => OW::getLanguage()->text('hint', 'button_send_message_label'),
             "attrs" => array("id" => $uniqId)
         );
+    }
+    
+    public function collectGroupButton( $groupId )
+    {
+        $group = HINT_CLASS_GroupsBridge::getInstance()->getGroupById($groupId);
+        
+        if ( empty($group) || $group["userId"] != OW::getUser()->getId() )
+        {
+            return null;
+        }
+        
+        $uniqId = uniqid("hint-mc-");
 
-        $event->add($button);
+        $js = UTIL_JsGenerator::newInstance();
+        
+        $recipients = array(MCOMPOSE_CLASS_GroupsBridge::ID_PREFIX . '_' . $groupId);
+        $recipientsData = MCOMPOSE_BOL_Service::getInstance()->getDataForIds($recipients);
+
+        $js->jQueryEvent("#" . $uniqId, "click", 'HINT.getShown().hide(); OW.trigger("mailbox.open_new_message_form", e.data.data); return false;', array("e"), array(
+            "data" => array(
+                "opponentId" => $recipients,
+                "mcompose" => array(
+                    "context" => MCOMPOSE_BOL_Service::CONTEXT_GROUP,
+                    "data" => $recipientsData
+                )
+            )
+        ));
+
+        OW::getDocument()->addOnloadScript($js);
+
+        return array(
+            "key" => "g-mcompose",
+            "label" => OW::getLanguage()->text('hint', 'button_group_send_message_label'),
+            "attrs" => array("id" => $uniqId)
+        );
+    }
+    
+    public function collectEventButton( $eventId )
+    {
+        $event = HINT_CLASS_EventsBridge::getInstance()->getEventById($eventId);
+        
+        if ( empty($event) || $event["userId"] != OW::getUser()->getId() )
+        {
+            return null;
+        }
+        
+        $uniqId = uniqid("hint-mc-");
+
+        $js = UTIL_JsGenerator::newInstance();
+        
+        $recipients = array(MCOMPOSE_CLASS_EventsBridge::ID_PREFIX . '_' . $eventId);
+        $recipientsData = MCOMPOSE_BOL_Service::getInstance()->getDataForIds($recipients);
+
+        $js->jQueryEvent("#" . $uniqId, "click", 'HINT.getShown().hide(); OW.trigger("mailbox.open_new_message_form", e.data.data); return false;', array("e"), array(
+            "data" => array(
+                "opponentId" => $recipients,
+                "mcompose" => array(
+                    "context" => MCOMPOSE_BOL_Service::CONTEXT_EVENT,
+                    "data" => $recipientsData
+                )
+            )
+        ));
+
+        OW::getDocument()->addOnloadScript($js);
+
+        return array(
+            "key" => "e-mcompose",
+            "label" => OW::getLanguage()->text('hint', 'button_event_send_message_label'),
+            "attrs" => array("id" => $uniqId)
+        );
     }
 
     public function onCollectButtonsPreview( BASE_CLASS_EventCollector $event )
     {
         $params = $event->getParams();
 
-        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
-        {
-            return;
-        }
-
-        $label = OW::getLanguage()->text('hint', 'button_send_message_label');
-
-        $button = array(
+        $previews = array();
+        
+        $previews[HINT_BOL_Service::ENTITY_TYPE_USER] = array(
             "key" => "mcompose",
-            "label" => $label,
+            "label" => OW::getLanguage()->text('hint', 'button_send_message_label'),
             "attrs" => array("href" => "javascript://")
         );
-
-        $event->add($button);
+        
+        $previews[HINT_BOL_Service::ENTITY_TYPE_GROUP] = array(
+            "key" => "g-mcompose",
+            "label" => OW::getLanguage()->text('hint', 'button_group_send_message_label'),
+            "attrs" => array("href" => "javascript://")
+        );
+        
+        $previews[HINT_BOL_Service::ENTITY_TYPE_EVENT] = array(
+            "key" => "e-mcompose",
+            "label" => OW::getLanguage()->text('hint', 'button_event_send_message_label'),
+            "attrs" => array("href" => "javascript://")
+        );
+        
+        if ( !empty($previews[$params["entityType"]]) )
+        {
+            $event->add($previews[$params["entityType"]]);
+        }
     }
 
     public function onCollectButtonsConfig( BASE_CLASS_EventCollector $event )
     {
         $params = $event->getParams();
-
-        if ( $params["entityType"] != HINT_BOL_Service::ENTITY_TYPE_USER )
+        $mcomposeInstalled = $this->isActive();
+        
+        $configs = array();
+        
+        $active = HINT_BOL_Service::getInstance()->isActionActive(HINT_BOL_Service::ENTITY_TYPE_USER, "mcompose");
+        $configs[HINT_BOL_Service::ENTITY_TYPE_USER] = array(
+            "key" => "mcompose",
+            "label" => OW::getLanguage()->text('mailbox', 'create_conversation_button'),
+            "active" => $active === null ? $mcomposeInstalled : $active,
+            "shortLabel" => OW::getLanguage()->text('mailbox', 'create_conversation_button')
+        );
+        
+        $active = HINT_BOL_Service::getInstance()->isActionActive(HINT_BOL_Service::ENTITY_TYPE_GROUP, "g-mcompose");
+        $configs[HINT_BOL_Service::ENTITY_TYPE_GROUP] = array(
+            "key" => "g-mcompose",
+            "label" => OW::getLanguage()->text('hint', 'button_group_send_message'),
+            "active" => $active === null ? false : $active,
+            "shortLabel" => OW::getLanguage()->text('hint', 'button_group_send_message_label')
+        );
+        
+        $active = HINT_BOL_Service::getInstance()->isActionActive(HINT_BOL_Service::ENTITY_TYPE_EVENT, "e-mcompose");
+        $configs[HINT_BOL_Service::ENTITY_TYPE_EVENT] = array(
+            "key" => "e-mcompose",
+            "label" => OW::getLanguage()->text('hint', 'button_event_send_message'),
+            "active" => $active === null ? false : $active,
+            "shortLabel" => OW::getLanguage()->text('hint', 'button_event_send_message_label')
+        );
+             
+        if ( empty($configs[$params["entityType"]]) )
         {
             return;
         }
-
-        $label = OW::getLanguage()->text('mailbox', 'create_conversation_button');
-        $active = HINT_BOL_Service::getInstance()->isActionActive(HINT_BOL_Service::ENTITY_TYPE_USER, "mcompose");
-
-        $mcomposeInstalled = $this->isActive();
         
-        $button = array(
-            "key" => "mcompose",
-            "active" => $active === null ? $mcomposeInstalled : $active,
-            "label" => $label
-        );
+        $button = $configs[$params["entityType"]];
         
         if ( !$mcomposeInstalled )
         {
@@ -155,7 +271,7 @@ class HINT_CLASS_McomposeBridge
             
             $button["requirements"]["long"] = OW::getLanguage()->text("hint", "mcompose_required_long", array(
                 "plugin" => '<a href="' . self::PLUGIN_URL . '" target="_blank">' . self::PLUGIN_TITLE . '</a>',
-                "feature" => $label
+                "feature" => $button["shortLabel"]
             ));
         }
 

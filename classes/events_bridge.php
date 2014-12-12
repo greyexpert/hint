@@ -43,6 +43,11 @@ class HINT_CLASS_EventsBridge
 
     }
     
+    public function isActive()
+    {
+        return OW::getPluginManager()->isPluginActive("event");
+    }
+    
     /**
      * 
      * @param int $groupId
@@ -587,7 +592,7 @@ class HINT_CLASS_EventsBridge
     
     public function init()
     {
-        if ( !OW::getPluginManager()->isPluginActive("event") )
+        if ( !$this->isActive() )
         {
             return;
         }

@@ -52,27 +52,33 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
         
         $this->menu->addElement($menuItem);
 
-        // group
+        if ( HINT_CLASS_GroupsBridge::getInstance()->isActive() )
+        {
+            // group
+
+            $menuItem = new BASE_MenuItem();
+            $menuItem->setLabel($language->text("hint", "admin_tab_groups"));
+            $menuItem->setIconClass("ow_ic_files");
+            $menuItem->setOrder(2);
+            $menuItem->setUrl($router->urlForRoute("hint-configuration-group"));
+            $menuItem->setKey("groups");
+
+            $this->menu->addElement($menuItem);
+        }
         
-        $menuItem = new BASE_MenuItem();
-        $menuItem->setLabel($language->text("hint", "admin_tab_groups"));
-        $menuItem->setIconClass("ow_ic_files");
-        $menuItem->setOrder(2);
-        $menuItem->setUrl($router->urlForRoute("hint-configuration-group"));
-        $menuItem->setKey("groups");
+        if ( HINT_CLASS_EventsBridge::getInstance()->isActive() )
+        {
+            // event
         
-        $this->menu->addElement($menuItem);
-        
-         // event
-        
-        $menuItem = new BASE_MenuItem();
-        $menuItem->setLabel($language->text("hint", "admin_tab_events"));
-        $menuItem->setIconClass("ow_ic_calendar");
-        $menuItem->setOrder(3);
-        $menuItem->setUrl($router->urlForRoute("hint-configuration-event"));
-        $menuItem->setKey("events");
-        
-        $this->menu->addElement($menuItem);
+            $menuItem = new BASE_MenuItem();
+            $menuItem->setLabel($language->text("hint", "admin_tab_events"));
+            $menuItem->setIconClass("ow_ic_calendar");
+            $menuItem->setOrder(3);
+            $menuItem->setUrl($router->urlForRoute("hint-configuration-event"));
+            $menuItem->setKey("events");
+
+            $this->menu->addElement($menuItem);
+        }
         
         return $this->menu;
     }
@@ -210,6 +216,11 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
 
     public function group()
     {
+        if ( !HINT_CLASS_GroupsBridge::getInstance()->isActive() )
+        {
+            throw new Redirect404Exception;
+        }
+        
         $headerBridge = HINT_CLASS_GheaderBridge::getInstance();
          
         $features = array();
@@ -245,6 +256,11 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
     
     public function event()
     {
+        if ( !HINT_CLASS_EventsBridge::getInstance()->isActive() )
+        {
+            throw new Redirect404Exception;
+        }
+        
         $headerBridge = HINT_CLASS_EheaderBridge::getInstance();
          
         $features = array();

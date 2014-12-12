@@ -43,6 +43,11 @@ class HINT_CLASS_GroupsBridge
 
     }
     
+    public function isActive()
+    {
+        return OW::getPluginManager()->isPluginActive("groups");
+    }
+        
     /**
      * 
      * @param int $groupId
@@ -690,7 +695,7 @@ class HINT_CLASS_GroupsBridge
 
     public function init()
     {
-        if ( !OW::getPluginManager()->isPluginActive("groups") )
+        if ( !$this->isActive() )
         {
             return;
         }
