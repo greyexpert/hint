@@ -100,7 +100,7 @@ class HINT_CLASS_GheaderBridge
     
     public function hasInviter()
     {
-        return class_exists("GHEADER_CMP_UserSelector");
+        return OW::getEventManager()->call("gheader.get_version" ) >= 3;
     }
     
     public function addStatic()

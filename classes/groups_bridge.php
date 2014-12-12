@@ -110,12 +110,7 @@ class HINT_CLASS_GroupsBridge
     {
         GROUPS_BOL_Service::getInstance()->deleteUser($groupId, $userId);
     }
-    
-    public function hasContentProvider()
-    {
-        return class_exists("GROUPS_CLASS_ContentProvider");
-    }
-    
+        
     public function getUserIds( $groupId, $count )
     {
         $users = GROUPS_BOL_Service::getInstance()->findGroupUserIdList($groupId);

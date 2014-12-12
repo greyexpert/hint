@@ -123,7 +123,9 @@ class HINT_CLASS_EventsBridge
     
     public function hasContentProvider()
     {
-        return class_exists("EVENT_CLASS_ContentProvider");
+        if ( !$this->isActive() ) return false;
+        
+        return OW::getPluginManager()->getPlugin("event")->getDto()->build >= 8520;
     }
         
     public function onCollectButtons( BASE_CLASS_EventCollector $event )
