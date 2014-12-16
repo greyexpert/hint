@@ -588,7 +588,7 @@ class HINT_CLASS_EventsBridge
     }
     
     
-    public function afterPluginsInit()
+    public function prepareParsers()
     {
         HINT_CLASS_ParseManager::getInstance()->addParser(new HINT_CLASS_EventParser());
     }
@@ -600,7 +600,7 @@ class HINT_CLASS_EventsBridge
             return;
         }
         
-        OW::getEventManager()->bind(OW_EventManager::ON_PLUGINS_INIT, array($this, 'afterPluginsInit'));
+        OW::getEventManager()->bind(OW_EventManager::ON_AFTER_ROUTE, array($this, 'prepareParsers'));
         
         OW::getEventManager()->bind(HINT_BOL_Service::EVENT_COLLECT_BUTTONS, array($this, 'onCollectButtons'));
         OW::getEventManager()->bind(HINT_BOL_Service::EVENT_COLLECT_BUTTONS_PREVIEW, array($this, 'onCollectButtonsPreview'));
