@@ -617,10 +617,10 @@ class HINT_CLASS_GroupsBridge
         $language = OW::getLanguage();
                 
         $userName = BOL_UserService::getInstance()->getDisplayName($groupinfo["userId"]);
-        $userUrl = BOL_UserService::getInstance()->getDisplayName($groupinfo["userId"]);
+        $userUrl = BOL_UserService::getInstance()->getUserUrl($groupinfo["userId"]);
         $userEmbed = '<a href="' . $userUrl . '">' . $userName . '</a>';
         
-        $createDate = UTIL_DateTime::formatDate(strtotime("11/10/15"));
+        $createDate = UTIL_DateTime::formatDate($groupinfo["timeStamp"]);
         
         $access = $groupinfo["whoCanView"] == "anyone"
                     ? $language->text("hint", "group_info_access_public")

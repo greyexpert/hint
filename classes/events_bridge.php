@@ -509,7 +509,7 @@ class HINT_CLASS_EventsBridge
         $type = HINT_BOL_Service::getInstance()->getConfig("ehintType");
         
         $userName = BOL_UserService::getInstance()->getDisplayName($eventInfo["userId"]);
-        $userUrl = BOL_UserService::getInstance()->getDisplayName($eventInfo["userId"]);
+        $userUrl = BOL_UserService::getInstance()->getUserUrl($eventInfo["userId"]);
         
         $userEmbed = '<a href="' . $userUrl . '">' . $userName . '</a>';
         
