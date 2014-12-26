@@ -304,151 +304,22 @@ class HINT_CLASS_BaseBridge
     
     private function renderQuestion( $userId, $questionName )
     {
-        $language = OW::getLanguage();
-        
-        $questionData = BOL_QuestionService::getInstance()->getQuestionData(array($userId), array($questionName));
-        if ( !isset($questionData[$userId][$questionName]) )
+        $data = BOL_UserService::getInstance()->getUserViewQuestions($userId, OW::getUser()->isAdmin(), array($questionName));
+        $out = "";
+
+        if ( !empty($data['data'][$userId][$questionName]) )
         {
-            return null;
+            $out = $data['data'][$userId][$questionName];
+            
+            if ( is_array($out) )
+            {
+                $out = $questionName == "googlemap_location" // googlemap_location shortcut
+                        ? $out["address"] 
+                        : implode(', ', $out);
+            }
         }
         
-        $question = BOL_QuestionService::getInstance()->findQuestionByName($questionName);
-        
-        switch ( $question->presentation )
-        {
-            /*case BOL_QuestionService::QUESTION_PRESENTATION_CHECKBOX:
-                
-                if ( (int) $questionData[$userId][$question->name] === 1 )
-                {
-                    $questionData[$userId][$question['name']] = $language->text('base', 'questions_checkbox_value_true');
-                }
-                else
-                {
-                    $questionData[$userId][$question['name']] = $language->text('base', 'questions_checkbox_value_false');
-                }
-
-                break;*/
-
-            case BOL_QuestionService::QUESTION_PRESENTATION_DATE:
-
-                $format = OW::getConfig()->getValue('base', 'date_field_format');
-
-                $value = 0;
-
-                switch ( $question->type )
-                {
-                    case BOL_QuestionService::QUESTION_VALUE_TYPE_DATETIME:
-
-                        $date = UTIL_DateTime::parseDate($questionData[$userId][$question->name], UTIL_DateTime::MYSQL_DATETIME_DATE_FORMAT);
-
-                        if ( isset($date) )
-                        {
-                            $format = OW::getConfig()->getValue('base', 'date_field_format');
-                            $value = mktime(0, 0, 0, $date['month'], $date['day'], $date['year']);
-                        }
-
-                        break;
-
-                    case BOL_QuestionService::QUESTION_VALUE_TYPE_SELECT:
-
-                        $value = (int)$questionData[$userId][$question->name];
-
-                        break;
-                }
-
-                if ( $format === 'dmy' )
-                {
-                    $questionData[$userId][$question->name] = date("d/m/Y",$value) ;
-                }
-                else
-                {
-                    $questionData[$userId][$question->name] = date("m/d/Y", $value);
-                }
-
-                break;
-
-            case BOL_QuestionService::QUESTION_PRESENTATION_BIRTHDATE:
-
-                $date = UTIL_DateTime::parseDate($questionData[$userId][$question->name], UTIL_DateTime::MYSQL_DATETIME_DATE_FORMAT);
-                $questionData[$userId][$question->name] = UTIL_DateTime::formatBirthdate($date['year'], $date['month'], $date['day']);
-
-                break;
-
-            case BOL_QuestionService::QUESTION_PRESENTATION_AGE:
-
-                $date = UTIL_DateTime::parseDate($questionData[$userId][$question->name], UTIL_DateTime::MYSQL_DATETIME_DATE_FORMAT);
-                $questionData[$userId][$question->name] = UTIL_DateTime::getAge($date['year'], $date['month'], $date['day']) . " " . $language->text('base', 'questions_age_year_old');
-
-                break;
-
-            case BOL_QuestionService::QUESTION_PRESENTATION_RANGE:
-
-                $range = explode('-', $questionData[$userId][$question->name] );
-                $questionData[$userId][$question->name] = $language->text('base', 'form_element_from') ." ". $range[0] ." ". $language->text('base', 'form_element_to') ." ". $range[1];
-
-                break;
-
-            case BOL_QuestionService::QUESTION_PRESENTATION_SELECT:
-            case BOL_QuestionService::QUESTION_PRESENTATION_RADIO:
-            case BOL_QuestionService::QUESTION_PRESENTATION_MULTICHECKBOX:
-
-                $value = "";
-                $multicheckboxValue = (int) $questionData[$userId][$question->name];
-
-                $questionValues = BOL_QuestionService::getInstance()->findQuestionValues($question->name);
-
-                foreach( $questionValues as $val )
-                {
-
-                    /* @var $val BOL_QuestionValue */
-
-                    if ( ( (int) $val->value ) & $multicheckboxValue )
-                    {
-                        if ( strlen($value) > 0 )
-                        {
-                            $value .= ', ';
-                        }
-
-                        $value .= $language->text('base', 'questions_question_' . $question->name . '_value_' . ($val->value));
-                    }
-                }
-
-                if ( strlen($value) > 0 )
-                {
-                    $questionData[$userId][$question->name] = $value;
-                }
-
-                break;
-
-            case BOL_QuestionService::QUESTION_PRESENTATION_URL:
-            case BOL_QuestionService::QUESTION_PRESENTATION_TEXT:
-            case BOL_QuestionService::QUESTION_PRESENTATION_TEXTAREA:
-
-                // googlemap_location shortcut
-                if ( $question->name == "googlemap_location" 
-                        && !empty($questionData[$userId][$question->name]) 
-                        && is_array($questionData[$userId][$question->name]) )
-                {
-                    $mapData = $questionData[$userId][$question->name];
-                    $value = trim($mapData["address"]);
-                }
-                else
-                {
-                    $value = trim($questionData[$userId][$question->name]);
-                }
-                
-                if ( strlen($value) > 0 )
-                {
-                    $questionData[$userId][$question->name] = UTIL_HtmlTag::autoLink(nl2br($value));
-                }
-
-                break;
-                
-            default :
-                $questionData[$userId][$question->name] = null;
-        }
-        
-        return $questionData[$userId][$question->name];
+        return $out;
     }
 
     public function init()
