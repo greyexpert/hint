@@ -27,6 +27,7 @@ class HINT_CLASS_UserParser extends HINT_CLASS_Parser
         $parseMask = "^" . str_replace('--PLACEHOLDER--', '([\w]{1,32})$', $routeMask);
         
         parent::__construct($parseMask, array(
+            ".ow_chat_in_item_author_href",
             ".index-BASE_CMP_MyAvatarWidget a",
             ".ow_menu_wrap a",
             ".ow_console_dropdown_hover a",
