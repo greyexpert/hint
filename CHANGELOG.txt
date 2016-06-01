@@ -1,3 +1,14 @@
+Hint 2010, 2016-06-01:
+
+Enhancements:
+- Simplicity and Turquoise themes optimisations
+- Minor enhancements
+
+Bug Fixes:
+- Double hint in chat
+- Minor fixes
+
+
 Hint 2000, 2014-12-12:
 
 New Hint types:
