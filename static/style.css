@@ -643,6 +643,13 @@ html .uhint-bottom-corner.ow_bg_color {
 
 .hint-view-all {
     vertical-align: top;
+    background-image: url("more.png");
+    background-position: center center;
+
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-width: 1px;
 }
 
 .hint-fgift {
@@ -672,4 +679,50 @@ html .ow_chat_dialog_wrap {
 
 .mcompose-new-message-opened .hint-container {
     z-index: 101;
+}
+
+/* Simplicity based themes */
+.simplicity .uhint-avatar,
+.turquoise .uhint-avatar
+{
+    border-radius: 50%;
+    margin-top: -53px;
+}
+
+.simplicity .uhint-avatar .uhint-avatar-image,
+.turquoise .uhint-avatar .uhint-avatar-image
+{
+    border-radius: 50%;
+}
+
+.simplicity .uhint-avatar.ow_avatar_console,
+.turquoise .uhint-avatar.ow_avatar_console
+{
+    padding: 2px;
+}
+
+.simplicity .uhint-avatar .ow_miniic_live,
+.turquoise .uhint-avatar .ow_miniic_live
+{
+    bottom: -17px;
+    left: 10px;
+}
+
+.simplicity .hint-user-list img,
+.turquoise .hint-user-list img
+{
+    border-radius: 50%;
+}
+
+.simplicity .hint-user-list,
+.turquoise .hint-user-list
+{
+    margin-top: 5px;
+}
+
+.simplicity .hint-view-all,
+.turquoise .hint-view-all
+{
+    border-radius: 50%;
+    background-position: center 0px;
 }
