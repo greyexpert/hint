@@ -57,10 +57,25 @@ class HINT_CLASS_BaseBridge
         $label = OW::getLanguage()->text("hint", "button_view_profile_label");
         $url = BOL_UserService::getInstance()->getUserUrl($userId);
 
+		$attrs = [
+			"id" => $uniqId,
+			"href" => $url
+		];
+
+		$openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
+			HINT_BOL_Service::ENTITY_TYPE_USER,
+			"view",
+			"newWindow"
+		);
+
+		if ($openInNewWindow) {
+			$attrs["target"] = "_blank";
+		}
+
         $button = array(
             "key" => "view",
             "label" => $label,
-            "attrs" => array("id" => $uniqId, "href" => $url, "target" => "_blank")
+            "attrs" => $attrs
         );
 
         $event->add($button);
@@ -97,12 +112,20 @@ class HINT_CLASS_BaseBridge
 
         $label = OW::getLanguage()->text("hint", "button_view_profile_config");
 
-        $active = HINT_BOL_Service::getInstance()->isActionActive(HINT_BOL_Service::ENTITY_TYPE_USER, "view");
+		$service = HINT_BOL_Service::getInstance();
+        $active = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_USER, "view");
 
         $button = array(
             "key" => "view",
             "active" => $active === null ? false : $active,
-            "label" => $label
+            "label" => $label,
+			"options" => [
+				[
+					"key" => "newWindow",
+					"active" => $service->getActionOption(HINT_BOL_Service::ENTITY_TYPE_USER, "view", "newWindow"),
+					"label" => OW::getLanguage()->text("hint", "button_view_profile_option_new_window")
+				]
+			]
         );
 
         $event->add($button);

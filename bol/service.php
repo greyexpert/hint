@@ -200,8 +200,16 @@ class HINT_BOL_Service
 
     public function setActionActive( $entityType, $action, $active = true )
     {
-        return $this->saveConfig("action-" . $entityType . "-" . $action, $active ? 1 : 0);
+        $this->saveConfig("action-" . $entityType . "-" . $action, $active ? 1 : 0);
     }
+
+    public function setActionOption($entityType, $action, $option, $value) {
+		$this->saveConfig("option-" . $entityType . "-" . $action . "-" . $option, $value);
+	}
+
+	public function getActionOption($entityType, $action, $option) {
+		return $this->getConfig("option-" . $entityType . "-" . $action . "-" . $option);
+	}
     
     public function getInfoLineSettings( $entityType, $line = null )
     {
