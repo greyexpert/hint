@@ -57,20 +57,20 @@ class HINT_CLASS_BaseBridge
         $label = OW::getLanguage()->text("hint", "button_view_profile_label");
         $url = BOL_UserService::getInstance()->getUserUrl($userId);
 
-		$attrs = array(
-			"id" => $uniqId,
-			"href" => $url
-		);
+        $attrs = array(
+            "id" => $uniqId,
+            "href" => $url
+        );
 
-		$openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
-			HINT_BOL_Service::ENTITY_TYPE_USER,
-			"view",
-			"newWindow"
-		);
+        $openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
+            HINT_BOL_Service::ENTITY_TYPE_USER,
+            "view",
+            "newWindow"
+        );
 
-		if ($openInNewWindow) {
-			$attrs["target"] = "_blank";
-		}
+        if ($openInNewWindow) {
+            $attrs["target"] = "_blank";
+        }
 
         $button = array(
             "key" => "view",
