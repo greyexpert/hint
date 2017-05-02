@@ -186,20 +186,19 @@ class HINT_CLASS_GroupsBridge
         }
         
         // View Group button
+        $attrs = array(
+            "href" => $groupInfo["url"]
+        );
 
-		$attrs = array(
-			"href" => $groupInfo["url"]
-		);
+        $openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
+            HINT_BOL_Service::ENTITY_TYPE_GROUP,
+            "group-view",
+            "newWindow"
+        );
 
-		$openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
-			HINT_BOL_Service::ENTITY_TYPE_GROUP,
-			"group-view",
-			"newWindow"
-		);
-
-		if ($openInNewWindow) {
-			$attrs["target"] = "_blank";
-		}
+        if ($openInNewWindow) {
+            $attrs["target"] = "_blank";
+        }
 
         $event->add(array(
             "key" => "group-view",
@@ -455,13 +454,13 @@ class HINT_CLASS_GroupsBridge
             "key" => "group-view",
             "active" => $viewGroup === null ? true : $viewGroup,
             "label" => $language->text("hint", "button_view_group_config"),
-			"options" => array(
-				array(
-					"key" => "newWindow",
-					"active" => $service->getActionOption(HINT_BOL_Service::ENTITY_TYPE_GROUP, "group-view", "newWindow"),
-					"label" => OW::getLanguage()->text("hint", "button_view_group_option_new_window")
-				)
-			)
+            "options" => array(
+                array(
+                    "key" => "newWindow",
+                    "active" => $service->getActionOption(HINT_BOL_Service::ENTITY_TYPE_GROUP, "group-view", "newWindow"),
+                    "label" => OW::getLanguage()->text("hint", "button_view_group_option_new_window")
+                )
+            )
         ));
         
         // Flag Group

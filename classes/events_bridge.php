@@ -148,19 +148,19 @@ class HINT_CLASS_EventsBridge
         }
         
         // View Event button
-		$attrs = array(
-			"href" => $eventInfo["url"]
-		);
+        $attrs = array(
+            "href" => $eventInfo["url"]
+        );
 
-		$openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
-			HINT_BOL_Service::ENTITY_TYPE_EVENT,
-			"event-view",
-			"newWindow"
-		);
+        $openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
+            HINT_BOL_Service::ENTITY_TYPE_EVENT,
+            "event-view",
+            "newWindow"
+        );
 
-		if ($openInNewWindow) {
-			$attrs["target"] = "_blank";
-		}
+        if ($openInNewWindow) {
+            $attrs["target"] = "_blank";
+        }
 
         $event->add(array(
             "key" => "event-view",
@@ -339,13 +339,13 @@ class HINT_CLASS_EventsBridge
             "key" => "event-view",
             "active" => $viewEvent === null ? true : $viewEvent,
             "label" => $language->text("hint", "button_view_event_config"),
-			"options" => array(
-				array(
-					"key" => "newWindow",
-					"active" => $service->getActionOption(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-view", "newWindow"),
-					"label" => OW::getLanguage()->text("hint", "button_view_event_option_new_window")
-				)
-			)
+            "options" => array(
+                array(
+                    "key" => "newWindow",
+                    "active" => $service->getActionOption(HINT_BOL_Service::ENTITY_TYPE_EVENT, "event-view", "newWindow"),
+                    "label" => OW::getLanguage()->text("hint", "button_view_event_option_new_window")
+                )
+            )
         ));
         
         // Flag Event

@@ -341,16 +341,16 @@ class HINT_ConfigurationForm extends Form
 
             $this->addElement($field);
 
-			$options = empty($action['options']) ? [] : $action['options'];
-			foreach ($options as $option) {
-				$optionName = "option-" . $action["key"] . "-" . $option["key"];
-				$optionField = new CheckboxField($optionName);
-				$optionField->setValue($option["active"]);
-				$optionField->setLabel($option["label"]);
-				$optionField->addAttribute("class", "h-refresher");
+            $options = empty($action['options']) ? [] : $action['options'];
+            foreach ($options as $option) {
+                $optionName = "option-" . $action["key"] . "-" . $option["key"];
+                $optionField = new CheckboxField($optionName);
+                $optionField->setValue($option["active"]);
+                $optionField->setLabel($option["label"]);
+                $optionField->addAttribute("class", "h-refresher");
 
-				$this->addElement($optionField);
-			}
+                $this->addElement($optionField);
+            }
         }
         
         // Additional Features
@@ -527,11 +527,12 @@ class HINT_ConfigurationForm extends Form
         {
             $service->setActionActive($this->entityType, $action["key"], !empty($values["action-" . $action["key"]]));
 
-			$options = empty($action['options']) ? [] : $action['options'];
-			foreach ($options as $option) {
-				$optionName = "option-" . $action["key"] . "-" . $option["key"];
-				$service->setActionOption($this->entityType, $action["key"], $option["key"], $values[$optionName]);
-			}
+            $options = empty($action['options']) ? [] : $action['options'];
+            foreach ($options as $option)
+            {
+                $optionName = "option-" . $action["key"] . "-" . $option["key"];
+                $service->setActionOption($this->entityType, $action["key"], $option["key"], $values[$optionName]);
+            }
         }
         
         $this->headerBridge->setEnabled($values["header_enabled"]);
