@@ -186,14 +186,25 @@ class HINT_CLASS_GroupsBridge
         }
         
         // View Group button
-        
+
+		$attrs = array(
+			"href" => $groupInfo["url"]
+		);
+
+		$openInNewWindow = HINT_BOL_Service::getInstance()->getActionOption(
+			HINT_BOL_Service::ENTITY_TYPE_GROUP,
+			"group-view",
+			"newWindow"
+		);
+
+		if ($openInNewWindow) {
+			$attrs["target"] = "_blank";
+		}
+
         $event->add(array(
             "key" => "group-view",
             "label" => $language->text("hint", "button_view_group_label"),
-            "attrs" => array(
-                "href" => $groupInfo["url"],
-                "target" => "_blank"
-            )
+            "attrs" => $attrs
         ));
         
         if ( !OW::getUser()->isAuthenticated() )
@@ -439,10 +450,18 @@ class HINT_CLASS_GroupsBridge
         // View Group
         
         $viewGroup = $service->isActionActive(HINT_BOL_Service::ENTITY_TYPE_GROUP, "group-view");
+
         $event->add(array(
             "key" => "group-view",
             "active" => $viewGroup === null ? true : $viewGroup,
-            "label" => $language->text("hint", "button_view_group_config")
+            "label" => $language->text("hint", "button_view_group_config"),
+			"options" => array(
+				array(
+					"key" => "newWindow",
+					"active" => $service->getActionOption(HINT_BOL_Service::ENTITY_TYPE_GROUP, "group-view", "newWindow"),
+					"label" => OW::getLanguage()->text("hint", "button_view_group_option_new_window")
+				)
+			)
         ));
         
         // Flag Group
