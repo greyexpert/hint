@@ -200,10 +200,18 @@ class HINT_BOL_Service
 
     public function setActionActive( $entityType, $action, $active = true )
     {
-        return $this->saveConfig("action-" . $entityType . "-" . $action, $active ? 1 : 0);
+        $this->saveConfig("action-" . $entityType . "-" . $action, $active ? 1 : 0);
     }
-    
-    public function getInfoLineSettings( $entityType, $line = null )
+
+    public function setActionOption($entityType, $action, $option, $value) {
+        $this->saveConfig("option-" . $entityType . "-" . $action . "-" . $option, $value);
+    }
+
+    public function getActionOption($entityType, $action, $option) {
+        return $this->getConfig("option-" . $entityType . "-" . $action . "-" . $option);
+    }
+
+	public function getInfoLineSettings( $entityType, $line = null )
     {
         $event = new BASE_CLASS_EventCollector(HINT_BOL_Service::EVENT_COLLECT_INFO_CONFIG, array(
             "entityType" => $entityType,

@@ -152,7 +152,7 @@ class HINT_CTRL_Admin extends ADMIN_CTRL_Abstract
                 );
             }
         }
-        
+
         $this->assign("requirements", $requirements);
         
         $params["features"] = $features;
@@ -340,6 +340,17 @@ class HINT_ConfigurationForm extends Form
             $field->addAttribute("class", "h-refresher");
 
             $this->addElement($field);
+
+            $options = empty($action['options']) ? [] : $action['options'];
+            foreach ($options as $option) {
+                $optionName = "option-" . $action["key"] . "-" . $option["key"];
+                $optionField = new CheckboxField($optionName);
+                $optionField->setValue($option["active"]);
+                $optionField->setLabel($option["label"]);
+                $optionField->addAttribute("class", "h-refresher");
+
+                $this->addElement($optionField);
+            }
         }
         
         // Additional Features
@@ -515,6 +526,13 @@ class HINT_ConfigurationForm extends Form
         foreach ( $this->actions as $action )
         {
             $service->setActionActive($this->entityType, $action["key"], !empty($values["action-" . $action["key"]]));
+
+            $options = empty($action['options']) ? [] : $action['options'];
+            foreach ($options as $option)
+            {
+                $optionName = "option-" . $action["key"] . "-" . $option["key"];
+                $service->setActionOption($this->entityType, $action["key"], $option["key"], $values[$optionName]);
+            }
         }
         
         $this->headerBridge->setEnabled($values["header_enabled"]);

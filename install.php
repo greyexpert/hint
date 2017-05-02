@@ -75,5 +75,8 @@ OW::getConfig()->addConfig("hint", "info_event_line2", json_encode(array(
     "question" => null
 )));
 
+OW::getConfig()->addConfig("hint", "option-user-view-newWindow", true);
+OW::getConfig()->addConfig("hint", "option-group-group-view-newWindow", true);
+OW::getConfig()->addConfig("hint", "option-event-event-view-newWindow", true);
 
 OW::getLanguage()->importPluginLangs(OW::getPluginManager()->getPlugin('hint')->getRootDir() . 'langs.zip', 'hint');

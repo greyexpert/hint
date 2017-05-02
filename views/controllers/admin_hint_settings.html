@@ -63,6 +63,10 @@ div.h-dnd-legend {
     padding-left: 20px;
 }
 
+.h-button-options {
+    margin-top: 5px;
+}
+
 {/style}
 
 {script}
@@ -208,6 +212,16 @@ div.h-dnd-legend {
                             <div class="h-button-label-requirements ow_small">
                                 {$btn.requirements.short}
                             </div>
+                        {/if}
+
+                        {if !empty($btn.options)}
+                        <div class="h-button-options ow_small ow_remark">
+                            {foreach from=$btn.options item="option"}
+                                <div class="h-button-option">
+                                    {input name="option-`$btn.key`-`$option.key`"} {label name="option-`$btn.key`-`$option.key`"}
+                                </div>
+                            {/foreach}
+                        </div>
                         {/if}
                     </td>
                 </tr>
