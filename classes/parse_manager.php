@@ -95,10 +95,8 @@ class HINT_CLASS_ParseManager
     public function initStatic()
     {
         $staticUrl = $this->plugin->getStaticUrl();
-        //OW::getDocument()->addStyleSheet($staticUrl . 'style.min.css?' . $this->plugin->getDto()->build);
-        OW::getDocument()->addStyleSheet($staticUrl . 'style.css?' . $this->plugin->getDto()->build);
-        //OW::getDocument()->addScript($staticUrl . 'script.min.js?' . $this->plugin->getDto()->build);
-        OW::getDocument()->addScript($staticUrl . 'script.js?' . $this->plugin->getDto()->build);
+        OW::getDocument()->addStyleSheet($staticUrl . 'style.min.css?' . $this->plugin->getDto()->build);
+        OW::getDocument()->addScript($staticUrl . 'script.min.js?' . $this->plugin->getDto()->build);
 
         $utils = array();
         $utils['queryRsp'] = OW::getRouter()->urlFor('HINT_CTRL_Hint', 'query');
